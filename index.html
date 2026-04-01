@@ -2,233 +2,151 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>My TV Guide</title>
+<title>Mary's TV Guide</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* GLOBAL */
+/* GENERAL */
 body {
   margin: 0;
-  background: #111;
-  color: #fff;
   font-family: Arial, sans-serif;
-  overflow-x: hidden;
+  background: #f4f4f4;
 }
 
-/* LOADING */
-.loading-screen {
+/* LOADING SCREEN */
+#loadingScreen {
   position: fixed;
-  inset: 0;
-  background: #0d0d0d;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  font-weight: bold;
+  z-index: 9999;
+}
+
+/* LOGIN SCREEN */
+#loginScreen {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  z-index: 99999;
-  animation: fadeOut 0.5s ease forwards;
-  animation-delay: 1.8s;
+  align-items: center;
+  height: 100vh;
+  background: white;
 }
-.spinner {
-  width: 55px;
-  height: 55px;
-  border: 6px solid #333;
-  border-top-color: #1e90ff;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-}
-.loading-text {
-  margin-top: 15px;
-  color: #ccc;
-  font-size: 1rem;
-  letter-spacing: 1px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-/* LOGIN */
-.login-container {
-  position: fixed;
-  inset: 0;
-  background: #111;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.login-box {
-  background: #1c1c1c;
-  padding: 25px;
+#loginBox {
+  background: #fff;
+  padding: 20px;
+  width: 280px;
   border-radius: 10px;
-  width: 300px;
-}
-.login-box h2 {
-  margin-top: 0;
-  text-align: center;
-}
-.login-box label {
-  font-size: 0.9rem;
-}
-}
-.login-box input {
-  width: 100%;
-  padding: 8px;
-  margin: 6px 0 12px;
-  border-radius: 6px;
-  border: none;
-}
-.login-box button {
-  width: 100%;
-  padding: 8px;
-  border-radius: 6px;
-  border: none;
-  background: #1e90ff;
-  color: #fff;
-  cursor: pointer;
-}
-.login-error {
-  color: #ff4444;
-  margin-bottom: 10px;
-  text-align: center;
-  min-height: 18px;
+  box-shadow: 0 0 10px #ccc;
 }
 
-/* HEADER */
-header {
-  background: #222;
-  padding: 15px;
-  font-size: 1.4rem;
-  font-weight: bold;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-.logout-btn {
-  float: right;
-  background: #333;
-  color: #fff;
-  border: 1px solid #444;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
+#loginBox input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
 }
 
+#loginBtn {
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  margin-top: 10px;
+  cursor: pointer;
+}
+#loginError {
+  color: red;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* APP */
+#app {
+  display: none;
+  padding: 20px;
 }
 
 /* FILTER BAR */
-.filter-bar {
+#filterBar {
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
-  padding: 10px;
-  background: #181818;
+  margin-bottom: 20px;
 }
+
 .filter-btn {
-  background: #333;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  color: #fff;
+  padding: 10px 15px;
+  background: #ddd;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 0.9rem;
 }
+
 .filter-btn.active {
-  background: #1e90ff;
+  background: #007bff;
+  color: white;
 }
-
 /* CHANNEL LIST */
-#channelList {
-  padding: 10px;
-}
 .channel {
+  background: white;
+  padding: 15px;
+  margin-bottom: 10px;
   display: flex;
-  align-items: center;
-  padding: 10px;
-  background: #181818;
-  border-bottom: 1px solid #333;
-  transition: 0.25s;
+  justify-content: space-between;
+  border-radius: 8px;
+  box-shadow: 0 0 5px #ccc;
 }
-}
-.channel:hover {
-  background: #1c1c1c;
-  box-shadow: 0 0 12px rgba(255,255,255,0.15);
-}
-.channel-info {
-  display: flex;
-  flex-direction: column;
-}
-.channel-name {
-  font-size: 1rem;
-  font-weight: bold;
-}
-.channel-meta {
-  font-size: 0.8rem;
-  color: #aaa;
-}
+
 .favorite-star {
-  margin-left: auto;
-  font-size: 1.3rem;
+  font-size: 24px;
   cursor: pointer;
-  color: #555;
+  color: #bbb;
 }
+
 .favorite-star.active {
-  color: #ffd700;
-}
-
-/* SMALL SCREEN */
-@media (max-width: 600px) {
-  .channel-name {
-    font-size: 0.95rem;
-  }
-}
-</style>
-</head>
-
+  color: gold;
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOADING SCREEN -->
-<div id="loadingScreen" class="loading-screen">
-  <div class="spinner"></div>
-  <div class="loading-text">Loading TV Guide...</div>
-</div>
+<!-- LOADING -->
+<div id="loadingScreen">Loading…</div>
 
-<!-- LOGIN SCREEN -->
-<div class="login-container" id="loginScreen">
-  <div class="login-box">
-    <h2>My TV Guide Login</h2>
-    <div class="login-error" id="loginError"></div>
-
-    <label for="username">Username</label>
-    <input id="username" type="text">
-
-    <label for="password">Password</label>
-    <input id="password" type="password">
-
-    <button id="loginBtn">Enter</button>
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div id="loginBox">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <div id="loginError"></div>
   </div>
 </div>
-<!-- MAIN APP -->
-<div id="app" style="display:none;">
 
-<header>
-  My TV Guide
-  <button id="logoutBtn" class="logout-btn">Logout</button>
-</header>
+<!-- APP -->
+<div id="app">
+<button id="logoutBtn" style="margin-bottom:20px;">Logout</button>
 
-<div class="filter-bar">
-  <button data-filter="all" class="filter-btn active">All</button>
-  <button data-filter="basic" class="filter-btn">Basic</button>
-  <button data-filter="premium" class="filter-btn">Premium</button>
-  <button data-filter="movies247" class="filter-btn">24/7 Movies</button>
-  <button data-filter="retro" class="filter-btn">Retro TV</button>
-</div>
+  <div id="filterBar">
+    <div class="filter-btn active" data-filter="all">All</div>
+    <div class="filter-btn" data-filter="basic">Basic</div>
+    <div class="filter-btn" data-filter="premium">Premium</div>
+    <div class="filter-btn" data-filter="movies247">24/7 Movies</div>
+    <div class="filter-btn" data-filter="retro">Retro</div>
+  </div>
 
-<div id="channelList"></div>
+  <div id="channelList"></div>
 
 </div>
+
+<!-- SCRIPT STARTS HERE -->
+<script>
 
 /* LOADING */
 window.addEventListener("load", () => {
@@ -260,8 +178,7 @@ loginBtn.addEventListener("click", () => {
 });
 
 /* LOGOUT */
-const logoutBtn = document.getElementById("logoutBtn");
-logoutBtn.addEventListener("click", () => {
+document.getElementById("logoutBtn").addEventListener("click", () => {
   app.style.display = "none";
   loginScreen.style.display = "flex";
   usernameInput.value = "";
@@ -269,7 +186,7 @@ logoutBtn.addEventListener("click", () => {
   loginError.textContent = "";
 });
 
-/* CHANNEL LIST (100+ CHANNELS) */
+/* CHANNEL LIST */
 const channels = [
   { number: 2, name: "ABC", category: "basic", favorite: false },
   { number: 4, name: "NBC", category: "basic", favorite: false },
@@ -308,8 +225,7 @@ const channels = [
   { number: 47, name: "TLC", category: "basic", favorite: false },
   { number: 48, name: "Investigation Discovery", category: "basic", favorite: false },
   { number: 49, name: "Weather Channel", category: "basic", favorite: false },
-
-  /* PREMIUM */
+/* PREMIUM */
   { number: 201, name: "HBO", category: "premium", favorite: false },
   { number: 202, name: "HBO 2", category: "premium", favorite: false },
   { number: 203, name: "HBO Family", category: "premium", favorite: false },
@@ -340,6 +256,8 @@ const channels = [
   { number: 406, name: "Decades", category: "retro", favorite: false },
   { number: 407, name: "Bounce", category: "retro", favorite: false }
 ];
+
+
 /* RENDER CHANNELS */
 const channelList = document.getElementById("channelList");
 
@@ -365,6 +283,7 @@ function renderChannels(filter = "all") {
 
   activateFavoriteStars();
 }
+
 function formatCategory(cat) {
   if (cat === "basic") return "Basic Cable";
   if (cat === "premium") return "Premium";
@@ -380,9 +299,10 @@ function activateFavoriteStars() {
       const index = e.target.dataset.index;
       channels[index].favorite = !channels[index].favorite;
       e.target.classList.toggle("active");
-    }); 
-   });
+    });
+  });
 }
+
 /* FILTER BUTTONS */
 const filterButtons = document.querySelectorAll(".filter-btn");
 let currentFilter = "all";
@@ -397,21 +317,14 @@ filterButtons.forEach(btn => {
   });
 });
 
+
 /* INITIAL RENDER */
 renderChannels("all");
+
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
 
 
 
