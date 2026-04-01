@@ -1,1 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My TV Guide</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<style>
+/* ------------------------------
+   GLOBAL STYLES
+--------------------------------*/
+body {
+  margin: 0;
+  background: #111;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ------------------------------
+   LOADING SCREEN
+--------------------------------*/
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0d0d0d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  animation: fadeOut 0.5s ease forwards;
+  animation-delay: 1.8s;
+}
+
+.spinner {
+  width: 55px;
+  height: 55px;
+  border: 6px solid #333;
+  border-top-color: #1e90ff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-text {
+  margin-top: 15px;
+  color: #ccc;
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* ------------------------------
+   LOGIN SCREEN
+--------------------------------*/
+.login-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-box {
+  background: #1c1c1c;
+  padding: 25px;
+  border-radius: 10px;
+  width: 300px;
+}
+
+.login-box h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 8px;
+  margin: 6px 0 12px;
+  border-radius: 6px;
+  border: none;
+}
+
+.login-error {
+  color: #ff4444;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* ------------------------------
+   HEADER + LOGOUT
+--------------------------------*/
+header {
+  background: #222;
+  padding: 15px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logout-btn {
+  float: right;
+  background: #333;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ------------------------------
+   FILTER BAR
+--------------------------------*/
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background: #181818;
+}
+
+.filter-btn {
+  background: #333;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.filter-btn.active {
+  background: #1e90ff;
+}
+
+/* ------------------------------
+   CHANNEL LIST
+--------------------------------*/
+.channel {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #181818;
+  border-bottom: 1px solid #333;
+  transition: 0.25s;
+}
+
+.channel:hover {
+  background: #1c1c1c;
+  box-shadow: 0 0 12px rgba(255,255,255,0.15);
+}
+
+.favorite-star {
+  margin-left: auto;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #555;
+}
+
+.favorite-star.active {
+  color: #ffd700;
+}
+
+/* ------------------------------
+   PROGRAM GRID
+--------------------------------*/
+.program {
+  background: #2a2a2a;
+  margin: 6px 0;
+  padding: 10px;
+  border-radius: 6px;
+  transition: opacity .25s, transform .25s;
+}
+
+.program:hover {
+  background: #3a3a3a;
+  transform: scale(1.02);
+}
+
+.program.hide {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* ------------------------------
+   MINI EPG POPUP
+--------------------------------*/
+.epg-popup {
+  position: fixed;
+  background: #1c1c1c;
+  padding: 12px;
+  border-radius: 8px;
+  display: none;
+  z-index: 9999;
+  width: 220px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loadingScreen" class="loading-screen">
+  <div class="spinner"></div>
+  <div class="loading-text">Loading TV Guide...</div>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div class="login-container" id="loginScreen">
+  <div class="login-box">
+    <h2>My TV Guide Login</h2>
+    <div class="login-error" id="loginError"></div>
+
+    <label>Username</label>
+    <input id="username" type="text">
+
+    <label>Password</label>
+    <input id="password" type="password">
+
+    <button id="loginBtn">Enter</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none;">
+
+<header>
+  My TV Guide
+  <button id="logoutBtn" class="logout-btn">Logout</button>
+</header>
+
+<div class="filter-bar">
+  <button data-filter="all" class="filter-btn active">All</button>
+  <button data-filter="basic" class="filter-btn">Basic</button>
+  <button data-filter="premium" class="filter-btn">Premium</button>
+  <button data-filter="movies" class="filter-btn">Movies</button>
+</div>
+
+<div id="channelList"></div>
+
+<div id="epgPopup" class="epg-popup"></div>
+
+</div>
+
+<script>
+/* ------------------------------
+   LOADING SCREEN
+--------------------------------*/
+window.addEventListener("load", () => {
+  const loader = document.getElementById("loadingScreen");
+  setTimeout(() => loader.style.display = "none", 2000);
+});
+
+/* ------------------------------
+   LOGIN SYSTEM
+--------------------------------*/
+const loginBtn = document.getElementById("loginBtn");
+const loginScreen = document.getElementById("loginScreen");
+const app = document.getElementById("app");
+const loginError = document.getElementById("loginError");
+
+const VALID_USERNAME = "mary";
+const VALID_PASSWORD = "mypassword123";
+
+loginBtn.addEventListener("click", () => {
+  const user = username.value.trim();
+  const pass = password.value;
+
+  if (user === VALID_USERNAME && pass === VALID_PASSWORD) {
+    loginScreen.style.display = "none";
+    app.style.display = "block";
+  } else {
+    loginError.textContent = "Invalid username or password.";
+  }
+});
+
+/* ------------------------------
+   LOGOUT
+--------------------------------*/
+logoutBtn.addEventListener("click", () => {
+  app.style.display = "none";
+  loginScreen.style.display = "flex";
+  username.value = "";
+  password.value = "";
+  loginError.textContent = "";
+});
+
+/* ------------------------------
+   CHANNEL DATA
+--------------------------------*/
+const channels = [
+  { name: "HBO", category: "premium", favorite: false },
+  { name: "ESPN", category: "basic", favorite: false },
+  { name: "Showtime", category: "premium", favorite: false },
+  { name: "AMC", category: "basic", favorite: false },
+  { name: "Starz", category: "premium", favorite: false },
+  { name: "TCM Movies", category: "movies", favorite: false }
+];
+
+/* ------------------------------
+   RENDER CHANNEL LIST
+--------------------------------*/
+const channelList = document.getElementById("channelList");
+
+function renderChannels() {
+  channelList.innerHTML = "";
+
+  channels.forEach((ch, index) => {
+    const div = document.createElement("div");
+    div.className = "channel";
+    div.innerHTML = `
+      ${ch.name}
+      <span class="favorite-star ${ch.favorite ? "active" : ""}" data-index="${index}">★</span>
+    `;
+
+    channelList.appendChild(div);
+  });
+
+  activateFavoriteStars();
+}
+
+renderChannels();
+
+/* ------------------------------
+   FAVORITES
+--------------------------------*/
+function activateFavoriteStars() {
+  document.querySelectorAll(".favorite-star").forEach(star => {
+    star.addEventListener("click", e => {
+      const index = e.target.dataset.index;
+      channels[index].favorite = !channels[index].favorite;
+      e.target.classList.toggle("active");
+    });
+  });
+}
+
+/* ------------------------------
+   FILTER BUTTONS
+--------------------------------*/
+const filterButtons = document.querySelectorAll(".filter-btn");
+
+filterButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelector(".filter-btn.active").classList.remove("active");
+    btn.classList.add("active");
+
+    const filter = btn.dataset.filter;
+
+    document.querySelectorAll(".channel").forEach((div, index) => {
+      const ch = channels[index];
+      div.style.display = (filter === "all" || ch.category === filter) ? "flex" : "none";
+    });
+  });
+});
+</script>
+
+</body>
+</html>
