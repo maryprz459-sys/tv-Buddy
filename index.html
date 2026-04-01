@@ -1,351 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Mary's TV Guide</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Test TV Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
 
-<style>
-/* GENERAL */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-}
+    #loginScreen, #app {
+      max-width: 400px;
+      margin: 0 auto;
+    }
 
+    #loginBox {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
 
+    #loginBox input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+    }
 
- /* ⭐ ADD THIS ANYWHERE INSIDE <style> */
-.channel.selected {
-  background: #cfe3ff;
-  border-left: 5px solid #007bff;
-}
+    #loginBtn {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      margin-top: 10px;
+      cursor: pointer;
+    }
 
-/* LOADING SCREEN */
-#loadingScreen {
-  ...
+    #loginError {
+      color: red;
+      margin-top: 10px;
+      text-align: center;
+    }
 
+    .channel {
+      background: white;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px #ccc;
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+    }
 
+    .channel.selected {
+      background: #cfe3ff;
+      border-left: 5px solid #007bff;
+    }
 
-/* LOADING SCREEN */
-#loadingScreen {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 28px;
-  font-weight: bold;
-  z-index: 9999;
-}
+    .favorite-star {
+      font-size: 24px;
+      cursor: pointer;
+      color: #bbb;
+    }
 
-/* LOGIN SCREEN */
-#loginScreen {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: white;
-}
-
-#loginBox {
-  background: #fff;
-  padding: 20px;
-  width: 280px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #ccc;
-}
-
-#loginBox input {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-}
-
-#loginBtn {
-  width: 100%;
-  padding: 10px;
-  background: #007bff;
-  color: white;
-  border: none;
-  margin-top: 10px;
-  cursor: pointer;
-}
-#loginError {
-  color: red;
-  margin-top: 10px;
-  text-align: center;
-}
-
-/* APP */
-#app {
-  display: none;
-  padding: 20px;
-}
-
-/* FILTER BAR */
-#filterBar {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.filter-btn {
-  padding: 10px 15px;
-  background: #ddd;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.filter-btn.active {
-  background: #007bff;
-  color: white;
-}
-/* CHANNEL LIST */
-.channel {
-  background: white;
-  padding: 15px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  border-radius: 8px;
-  box-shadow: 0 0 5px #ccc;
-}
-
-.favorite-star {
-  font-size: 24px;
-  cursor: pointer;
-  color: #bbb;
-}
-
-.favorite-star.active {
-  color: gold;
-}
-</style>
+    .favorite-star.active {
+      color: gold;
+    }
+  </style>
 </head>
-
 <body>
 
-<!-- LOADING -->
-<div id="loadingScreen">Loading…</div>
-
-<!-- LOGIN -->
-<div id="loginScreen">
-  <div id="loginBox">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button id="loginBtn">Login</button>
-    <div id="loginError"></div>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="app">
-<button id="logoutBtn" style="margin-bottom:20px;">Logout</button>
-
-  <div id="filterBar">
-    <div class="filter-btn active" data-filter="all">All</div>
-    <div class="filter-btn" data-filter="basic">Basic</div>
-    <div class="filter-btn" data-filter="premium">Premium</div>
-    <div class="filter-btn" data-filter="movies247">24/7 Movies</div>
-    <div class="filter-btn" data-filter="retro">Retro</div>
+  <!-- LOGIN -->
+  <div id="loginScreen">
+    <div id="loginBox">
+      <h2>Login</h2>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button id="loginBtn">Login</button>
+      <div id="loginError"></div>
+    </div>
   </div>
 
-  <div id="channelList"></div>
+  <!-- APP -->
+  <div id="app" style="display:none;">
+    <button id="logoutBtn" style="margin-bottom:20px;">Logout</button>
+    <h3>Channels</h3>
+    <div id="channelList"></div>
+  </div>
 
-</div>
+  <script>
+    // LOGIN
+    const loginScreen = document.getElementById("loginScreen");
+    const app = document.getElementById("app");
+    const loginBtn = document.getElementById("loginBtn");
+    const loginError = document.getElementById("loginError");
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
 
-<!-- SCRIPT STARTS HERE -->
-<script>
+    const VALID_USERNAME = "mary";
+    const VALID_PASSWORD = "mypassword123";
 
-/* LOADING */
-window.addEventListener("load", () => {
-  const loader = document.getElementById("loadingScreen");
-  setTimeout(() => loader.style.display = "none", 2000);
-});
+    loginBtn.addEventListener("click", () => {
+      const user = usernameInput.value.trim();
+      const pass = passwordInput.value;
 
-/* LOGIN */
-const loginBtn = document.getElementById("loginBtn");
-const loginScreen = document.getElementById("loginScreen");
-const app = document.getElementById("app");
-const loginError = document.getElementById("loginError");
-const usernameInput = document.getElementById("username");
-const passwordInput = document.getElementById("password");
-
-const VALID_USERNAME = "mary";
-const VALID_PASSWORD = "mypassword123";
-
-loginBtn.addEventListener("click", () => {
-  const user = usernameInput.value.trim();
-  const pass = passwordInput.value;
-
-  if (user === VALID_USERNAME && pass === VALID_PASSWORD) {
-    loginScreen.style.display = "none";
-    app.style.display = "block";
-  } else {
-    loginError.textContent = "Invalid username or password.";
-  }
-});
-
-/* LOGOUT */
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  app.style.display = "none";
-  loginScreen.style.display = "flex";
-  usernameInput.value = "";
-  passwordInput.value = "";
-  loginError.textContent = "";
-});
-
-/* CHANNEL LIST */
-const channels = [
-  { number: 2, name: "ABC", category: "basic", favorite: false },
-  { number: 4, name: "NBC", category: "basic", favorite: false },
-  { number: 5, name: "FOX", category: "basic", favorite: false },
-  { number: 7, name: "CBS", category: "basic", favorite: false },
-  { number: 9, name: "PBS", category: "basic", favorite: false },
-  { number: 11, name: "CW", category: "basic", favorite: false },
-  { number: 13, name: "MyNetworkTV", category: "basic", favorite: false },
-  { number: 20, name: "ESPN", category: "basic", favorite: false },
-  { number: 21, name: "ESPN2", category: "basic", favorite: false },
-  { number: 22, name: "TNT", category: "basic", favorite: false },
-  { number: 23, name: "TBS", category: "basic", favorite: false },
-  { number: 24, name: "USA Network", category: "basic", favorite: false },
-  { number: 25, name: "FX", category: "basic", favorite: false },
-  { number: 26, name: "A&E", category: "basic", favorite: false },
-  { number: 27, name: "History Channel", category: "basic", favorite: false },
-  { number: 28, name: "Discovery Channel", category: "basic", favorite: false },
-  { number: 29, name: "National Geographic", category: "basic", favorite: false },
-  { number: 30, name: "HGTV", category: "basic", favorite: false },
-  { number: 31, name: "Food Network", category: "basic", favorite: false },
-  { number: 32, name: "Travel Channel", category: "basic", favorite: false },
-  { number: 33, name: "Lifetime", category: "basic", favorite: false },
-  { number: 34, name: "Hallmark Channel", category: "basic", favorite: false },
-  { number: 35, name: "Bravo", category: "basic", favorite: false },
-  { number: 36, name: "E!", category: "basic", favorite: false },
-  { number: 37, name: "Syfy", category: "basic", favorite: false },
-  { number: 38, name: "Oxygen", category: "basic", favorite: false },
-  { number: 39, name: "BET", category: "basic", favorite: false },
-  { number: 40, name: "VH1", category: "basic", favorite: false },
-  { number: 41, name: "MTV", category: "basic", favorite: false },
-  { number: 42, name: "Comedy Central", category: "basic", favorite: false },
-  { number: 43, name: "Cartoon Network", category: "basic", favorite: false },
-  { number: 44, name: "Nickelodeon", category: "basic", favorite: false },
-  { number: 45, name: "Disney Channel", category: "basic", favorite: false },
-  { number: 46, name: "Animal Planet", category: "basic", favorite: false },
-  { number: 47, name: "TLC", category: "basic", favorite: false },
-  { number: 48, name: "Investigation Discovery", category: "basic", favorite: false },
-  { number: 49, name: "Weather Channel", category: "basic", favorite: false },
-/* PREMIUM */
-  { number: 201, name: "HBO", category: "premium", favorite: false },
-  { number: 202, name: "HBO 2", category: "premium", favorite: false },
-  { number: 203, name: "HBO Family", category: "premium", favorite: false },
-  { number: 210, name: "Showtime", category: "premium", favorite: false },
-  { number: 211, name: "Showtime 2", category: "premium", favorite: false },
-  { number: 220, name: "Starz", category: "premium", favorite: false },
-  { number: 221, name: "Starz Edge", category: "premium", favorite: false },
-  { number: 230, name: "Cinemax", category: "premium", favorite: false },
-  { number: 231, name: "MoreMAX", category: "premium", favorite: false },
-  { number: 240, name: "The Movie Channel", category: "premium", favorite: false },
-
-  /* 24/7 MOVIES */
-  { number: 301, name: "Action Movies 24/7", category: "movies247", favorite: false },
-  { number: 302, name: "Comedy Movies 24/7", category: "movies247", favorite: false },
-  { number: 303, name: "Drama Movies 24/7", category: "movies247", favorite: false },
-  { number: 304, name: "Romance Movies 24/7", category: "movies247", favorite: false },
-  { number: 305, name: "Horror Movies 24/7", category: "movies247", favorite: false },
-  { number: 306, name: "Sci-Fi Movies 24/7", category: "movies247", favorite: false },
-  { number: 307, name: "Classic Movies 24/7", category: "movies247", favorite: false },
-  { number: 308, name: "Family Movies 24/7", category: "movies247", favorite: false },
-
-  /* RETRO */
-  { number: 401, name: "MeTV", category: "retro", favorite: false },
-  { number: 402, name: "Antenna TV", category: "retro", favorite: false },
-  { number: 403, name: "Cozi TV", category: "retro", favorite: false },
-  { number: 404, name: "TV Land", category: "retro", favorite: false },
-  { number: 405, name: "Retro TV", category: "retro", favorite: false },
-  { number: 406, name: "Decades", category: "retro", favorite: false },
-  { number: 407, name: "Bounce", category: "retro", favorite: false }
-];
-
-
-/* RENDER CHANNELS */
-const channelList = document.getElementById("channelList");
-
-function renderChannels(filter = "all") {
-  channelList.innerHTML = "";
-
-  channels.forEach((ch, index) => {
-    if (filter !== "all" && ch.category !== filter) return;
-
-    const div = document.createElement("div");
-    div.className = "channel";
-div.addEventListener("click", () => {
-  document.querySelectorAll(".channel").forEach(c => c.classList.remove("selected"));
-  div.classList.add("selected");
-});
-
-
-    div.innerHTML = `
-      <div class="channel-info">
-        <div class="channel-name">${ch.number} – ${ch.name}</div>
-        <div class="channel-meta">${formatCategory(ch.category)}</div>
-      </div>
-      <span class="favorite-star ${ch.favorite ? "active" : ""}" data-index="${index}">★</span>
-    `;
-
-    channelList.appendChild(div);
-  });
-
-  activateFavoriteStars();
-}
-
-function formatCategory(cat) {
-  if (cat === "basic") return "Basic Cable";
-  if (cat === "premium") return "Premium";
-  if (cat === "movies247") return "24/7 Movie Channel";
-  if (cat === "retro") return "Retro TV";
-  return "";
-}
-
-/* FAVORITES */
-function activateFavoriteStars() {
-  document.querySelectorAll(".favorite-star").forEach(star => {
-    star.addEventListener("click", e => {
-      const index = e.target.dataset.index;
-      channels[index].favorite = !channels[index].favorite;
-      e.target.classList.toggle("active");
+      if (user === VALID_USERNAME && pass === VALID_PASSWORD) {
+        loginScreen.style.display = "none";
+        app.style.display = "block";
+      } else {
+        loginError.textContent = "Invalid username or password.";
+      }
     });
-  });
-}
 
-/* FILTER BUTTONS */
-const filterButtons = document.querySelectorAll(".filter-btn");
-let currentFilter = "all";
+    // LOGOUT
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      app.style.display = "none";
+      loginScreen.style.display = "flex";
+      usernameInput.value = "";
+      passwordInput.value = "";
+      loginError.textContent = "";
+    });
 
-filterButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelector(".filter-btn.active").classList.remove("active");
-    btn.classList.add("active");
+    // CHANNELS
+    const channels = [
+      { number: 2, name: "ABC", favorite: false },
+      { number: 4, name: "NBC", favorite: false },
+      { number: 5, name: "FOX", favorite: false }
+    ];
 
-    currentFilter = btn.dataset.filter;
-    renderChannels(currentFilter);
-  });
-});
+    const channelList = document.getElementById("channelList");
 
+    function renderChannels() {
+      channelList.innerHTML = "";
+      channels.forEach((ch, index) => {
+        const div = document.createElement("div");
+        div.className = "channel";
+        div.innerHTML = `
+          <div>${ch.number} – ${ch.name}</div>
+          <span class="favorite-star ${ch.favorite ? "active" : ""}" data-index="${index}">★</span>
+        `;
 
-/* INITIAL RENDER */
-renderChannels("all");
+        // highlight on click
+        div.addEventListener("click", () => {
+          document.querySelectorAll(".channel").forEach(c => c.classList.remove("selected"));
+          div.classList.add("selected");
+        });
 
-</script>
+        channelList.appendChild(div);
+      });
 
+      activateFavoriteStars();
+    }
+
+    function activateFavoriteStars() {
+      document.querySelectorAll(".favorite-star").forEach(star => {
+        star.addEventListener("click", e => {
+          e.stopPropagation(); // don’t break channel click
+          const index = e.target.dataset.index;
+          channels[index].favorite = !channels[index].favorite;
+          e.target.classList.toggle("active");
+        });
+      });
+    }
+
+    renderChannels();
+  </script>
 </body>
 </html>
-
-
-
-
-
