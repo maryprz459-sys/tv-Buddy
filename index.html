@@ -13,6 +13,20 @@ body {
   background: #f4f4f4;
 }
 
+
+
+ /* ⭐ ADD THIS ANYWHERE INSIDE <style> */
+.channel.selected {
+  background: #cfe3ff;
+  border-left: 5px solid #007bff;
+}
+
+/* LOADING SCREEN */
+#loadingScreen {
+  ...
+
+
+
 /* LOADING SCREEN */
 #loadingScreen {
   position: fixed;
@@ -269,6 +283,11 @@ function renderChannels(filter = "all") {
 
     const div = document.createElement("div");
     div.className = "channel";
+div.addEventListener("click", () => {
+  document.querySelectorAll(".channel").forEach(c => c.classList.remove("selected"));
+  div.classList.add("selected");
+});
+
 
     div.innerHTML = `
       <div class="channel-info">
