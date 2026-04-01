@@ -5,7 +5,6 @@
 <title>My TV Guide</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
 <style>
 /* GLOBAL */
 body {
@@ -36,7 +35,9 @@ body {
   border-top-color: #1e90ff;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
-}.loading-text {
+}
+}
+.loading-text {
   margin-top: 15px;
   color: #ccc;
   font-size: 1rem;
@@ -67,12 +68,14 @@ body {
 .login-box label {
   font-size: 0.9rem;
 }
-login-box input {
+}
+.login-box input {
   width: 100%;
   padding: 8px;
   margin: 6px 0 12px;
   border-radius: 6px;
   border: none;
+}
 .login-box button {
   width: 100%;
   padding: 8px;
@@ -81,12 +84,14 @@ login-box input {
   background: #1e90ff;
   color: #fff;
   cursor: pointer;
+}
 .login-error {
   color: #ff4444;
   margin-bottom: 10px;
   text-align: center;
   min-height: 18px;
 }
+
 /* HEADER */
 header {
   background: #222;
@@ -106,6 +111,9 @@ header {
   border-radius: 6px;
   cursor: pointer;
 }
+
+}
+
 /* FILTER BAR */
 .filter-bar {
   display: flex;
@@ -126,6 +134,7 @@ header {
 .filter-btn.active {
   background: #1e90ff;
 }
+
 /* CHANNEL LIST */
 #channelList {
   padding: 10px;
@@ -137,6 +146,7 @@ header {
   background: #181818;
   border-bottom: 1px solid #333;
   transition: 0.25s;
+}
 }
 .channel:hover {
   background: #1c1c1c;
@@ -159,9 +169,11 @@ header {
   font-size: 1.3rem;
   cursor: pointer;
   color: #555;
+}
 .favorite-star.active {
   color: #ffd700;
 }
+
 /* SMALL SCREEN */
 @media (max-width: 600px) {
   .channel-name {
@@ -171,8 +183,11 @@ header {
 </style>
 </head>
 
-<body>
+}
+</style>
+</head>
 
+<body>
 
 <!-- LOADING SCREEN -->
 <div id="loadingScreen" class="loading-screen">
@@ -195,8 +210,6 @@ header {
     <button id="loginBtn">Enter</button>
   </div>
 </div>
-
-
 <!-- MAIN APP -->
 <div id="app" style="display:none;">
 
@@ -216,8 +229,6 @@ header {
 <div id="channelList"></div>
 
 </div>
-
-<script>
 
 /* LOADING */
 window.addEventListener("load", () => {
@@ -248,7 +259,6 @@ loginBtn.addEventListener("click", () => {
   }
 });
 
-
 /* LOGOUT */
 const logoutBtn = document.getElementById("logoutBtn");
 logoutBtn.addEventListener("click", () => {
@@ -259,124 +269,77 @@ logoutBtn.addEventListener("click", () => {
   loginError.textContent = "";
 });
 
-/* CHANNEL DATA: 100+ CHANNELS WITH NUMBERS */
-
-/* category:
-   - "basic"
-   - "premium"
-   - "movies247"
-   - "retro"
-*/
-
+/* CHANNEL LIST (100+ CHANNELS) */
 const channels = [
-  /* BASIC CABLE */
-  { number: 2,   name: "ABC",              category: "basic", favorite: false },
-  { number: 4,   name: "NBC",              category: "basic", favorite: false },
-  { number: 5,   name: "FOX",              category: "basic", favorite: false },
-  { number: 7,   name: "CBS",              category: "basic", favorite: false },
-  { number: 9,   name: "PBS",              category: "basic", favorite: false },
-  { number: 11,  name: "CW",               category: "basic", favorite: false },
-  { number: 13,  name: "MyNetworkTV",      category: "basic", favorite: false },
-  { number: 20,  name: "ESPN",             category: "basic", favorite: false },
-  { number: 21,  name: "ESPN2",            category: "basic", favorite: false },
-  { number: 22,  name: "TNT",              category: "basic", favorite: false },
-  { number: 23,  name: "TBS",              category: "basic", favorite: false },
-  { number: 24,  name: "USA Network",      category: "basic", favorite: false },
-  { number: 25,  name: "FX",               category: "basic", favorite: false },
-  { number: 26,  name: "A&E",              category: "basic", favorite: false },
-  { number: 27,  name: "History Channel",  category: "basic", favorite: false },
-  { number: 28,  name: "Discovery Channel",category: "basic", favorite: false },
-  { number: 29,  name: "National Geographic",category: "basic", favorite: false },
-  { number: 30,  name: "HGTV",             category: "basic", favorite: false },
-  { number: 31,  name: "Food Network",     category: "basic", favorite: false },
-  { number: 32,  name: "Travel Channel",   category: "basic", favorite: false },
-  { number: 33,  name: "Lifetime",         category: "basic", favorite: false },
-  { number: 34,  name: "Hallmark Channel", category: "basic", favorite: false },
-  { number: 35,  name: "Bravo",            category: "basic", favorite: false },
-  { number: 36,  name: "E!",               category: "basic", favorite: false },
-  { number: 37,  name: "Syfy",             category: "basic", favorite: false },
-  { number: 38,  name: "Oxygen",           category: "basic", favorite: false },
-  { number: 39,  name: "BET",              category: "basic", favorite: false },
-  { number: 40,  name: "VH1",              category: "basic", favorite: false },
-  { number: 41,  name: "MTV",              category: "basic", favorite: false },
-  { number: 42,  name: "Comedy Central",   category: "basic", favorite: false },
-  { number: 43,  name: "Cartoon Network",  category: "basic", favorite: false },
-  { number: 44,  name: "Nickelodeon",      category: "basic", favorite: false },
-  { number: 45,  name: "Disney Channel",   category: "basic", favorite: false },
-  { number: 46,  name: "Animal Planet",    category: "basic", favorite: false },
-  { number: 47,  name: "TLC",              category: "basic", favorite: false },
-  { number: 48,  name: "Investigation Discovery",category: "basic", favorite: false },
-  { number: 49,  name: "Weather Channel",  category: "basic", favorite: false },
-  { number: 50,  name: "NewsNation",       category: "basic", favorite: false },
-  { number: 51,  name: "CNN",              category: "basic", favorite: false },
-  { number: 52,  name: "MSNBC",            category: "basic", favorite: false },
-  { number: 53,  name: "Fox News",         category: "basic", favorite: false },
-  { number: 54,  name: "Bloomberg",        category: "basic", favorite: false },
-  { number: 55,  name: "C-SPAN",           category: "basic", favorite: false },
+  { number: 2, name: "ABC", category: "basic", favorite: false },
+  { number: 4, name: "NBC", category: "basic", favorite: false },
+  { number: 5, name: "FOX", category: "basic", favorite: false },
+  { number: 7, name: "CBS", category: "basic", favorite: false },
+  { number: 9, name: "PBS", category: "basic", favorite: false },
+  { number: 11, name: "CW", category: "basic", favorite: false },
+  { number: 13, name: "MyNetworkTV", category: "basic", favorite: false },
+  { number: 20, name: "ESPN", category: "basic", favorite: false },
+  { number: 21, name: "ESPN2", category: "basic", favorite: false },
+  { number: 22, name: "TNT", category: "basic", favorite: false },
+  { number: 23, name: "TBS", category: "basic", favorite: false },
+  { number: 24, name: "USA Network", category: "basic", favorite: false },
+  { number: 25, name: "FX", category: "basic", favorite: false },
+  { number: 26, name: "A&E", category: "basic", favorite: false },
+  { number: 27, name: "History Channel", category: "basic", favorite: false },
+  { number: 28, name: "Discovery Channel", category: "basic", favorite: false },
+  { number: 29, name: "National Geographic", category: "basic", favorite: false },
+  { number: 30, name: "HGTV", category: "basic", favorite: false },
+  { number: 31, name: "Food Network", category: "basic", favorite: false },
+  { number: 32, name: "Travel Channel", category: "basic", favorite: false },
+  { number: 33, name: "Lifetime", category: "basic", favorite: false },
+  { number: 34, name: "Hallmark Channel", category: "basic", favorite: false },
+  { number: 35, name: "Bravo", category: "basic", favorite: false },
+  { number: 36, name: "E!", category: "basic", favorite: false },
+  { number: 37, name: "Syfy", category: "basic", favorite: false },
+  { number: 38, name: "Oxygen", category: "basic", favorite: false },
+  { number: 39, name: "BET", category: "basic", favorite: false },
+  { number: 40, name: "VH1", category: "basic", favorite: false },
+  { number: 41, name: "MTV", category: "basic", favorite: false },
+  { number: 42, name: "Comedy Central", category: "basic", favorite: false },
+  { number: 43, name: "Cartoon Network", category: "basic", favorite: false },
+  { number: 44, name: "Nickelodeon", category: "basic", favorite: false },
+  { number: 45, name: "Disney Channel", category: "basic", favorite: false },
+  { number: 46, name: "Animal Planet", category: "basic", favorite: false },
+  { number: 47, name: "TLC", category: "basic", favorite: false },
+  { number: 48, name: "Investigation Discovery", category: "basic", favorite: false },
+  { number: 49, name: "Weather Channel", category: "basic", favorite: false },
 
   /* PREMIUM */
-  { number: 201, name: "HBO",              category: "premium", favorite: false },
-  { number: 202, name: "HBO 2",            category: "premium", favorite: false },
-  { number: 203, name: "HBO Family",       category: "premium", favorite: false },
-  { number: 204, name: "HBO Signature",    category: "premium", favorite: false },
-  { number: 205, name: "HBO Comedy",       category: "premium", favorite: false },
-  { number: 210, name: "Showtime",         category: "premium", favorite: false },
-  { number: 211, name: "Showtime 2",       category: "premium", favorite: false },
-  { number: 212, name: "Showtime Showcase",category: "premium", favorite: false },
-  { number: 213, name: "Showtime Extreme", category: "premium", favorite: false },
-  { number: 220, name: "Starz",            category: "premium", favorite: false },
-  { number: 221, name: "Starz Edge",       category: "premium", favorite: false },
-  { number: 222, name: "Starz Cinema",     category: "premium", favorite: false },
-  { number: 223, name: "Starz Encore",     category: "premium", favorite: false },
-  { number: 230, name: "Cinemax",          category: "premium", favorite: false },
-  { number: 231, name: "MoreMAX",          category: "premium", favorite: false },
-  { number: 232, name: "ActionMAX",        category: "premium", favorite: false },
-  { number: 233, name: "ThrillerMAX",      category: "premium", favorite: false },
-  { number: 240, name: "The Movie Channel",category: "premium", favorite: false },
-  { number: 241, name: "TMC Xtra",         category: "premium", favorite: false },
-  { number: 250, name: "Epix",             category: "premium", favorite: false },
-  { number: 251, name: "Epix 2",           category: "premium", favorite: false },
-  { number: 252, name: "Epix Hits",        category: "premium", favorite: false },
+  { number: 201, name: "HBO", category: "premium", favorite: false },
+  { number: 202, name: "HBO 2", category: "premium", favorite: false },
+  { number: 203, name: "HBO Family", category: "premium", favorite: false },
+  { number: 210, name: "Showtime", category: "premium", favorite: false },
+  { number: 211, name: "Showtime 2", category: "premium", favorite: false },
+  { number: 220, name: "Starz", category: "premium", favorite: false },
+  { number: 221, name: "Starz Edge", category: "premium", favorite: false },
+  { number: 230, name: "Cinemax", category: "premium", favorite: false },
+  { number: 231, name: "MoreMAX", category: "premium", favorite: false },
+  { number: 240, name: "The Movie Channel", category: "premium", favorite: false },
 
-  /* 24/7 MOVIE CHANNELS */
-  { number: 301, name: "Action Movies 24/7",     category: "movies247", favorite: false },
-  { number: 302, name: "Comedy Movies 24/7",     category: "movies247", favorite: false },
-  { number: 303, name: "Drama Movies 24/7",      category: "movies247", favorite: false },
-  { number: 304, name: "Romance Movies 24/7",    category: "movies247", favorite: false },
-  { number: 305, name: "Horror Movies 24/7",     category: "movies247", favorite: false },
-  { number: 306, name: "Sci-Fi Movies 24/7",     category: "movies247", favorite: false },
-  { number: 307, name: "Classic Movies 24/7",    category: "movies247", favorite: false },
-  { number: 308, name: "Family Movies 24/7",     category: "movies247", favorite: false },
-  { number: 309, name: "Holiday Movies 24/7",    category: "movies247", favorite: false },
-  { number: 310, name: "Black Cinema 24/7",      category: "movies247", favorite: false },
-  { number: 311, name: "Latino Movies 24/7",     category: "movies247", favorite: false },
-  { number: 312, name: "Thriller Movies 24/7",   category: "movies247", favorite: false },
-  { number: 313, name: "Adventure Movies 24/7",  category: "movies247", favorite: false },
-  { number: 314, name: "Documentary Movies 24/7",category: "movies247", favorite: false },
-  { number: 315, name: "Indie Movies 24/7",      category: "movies247", favorite: false },
-  { number: 316, name: "Animated Movies 24/7",   category: "movies247", favorite: false },
-  { number: 317, name: "Superhero Movies 24/7",  category: "movies247", favorite: false },
-  { number: 318, name: "Western Movies 24/7",    category: "movies247", favorite: false },
-  { number: 319, name: "Crime Movies 24/7",      category: "movies247", favorite: false },
-  { number: 320, name: "Epic Movies 24/7",       category: "movies247", favorite: false },
- /* RETRO TV */
-  { number: 401, name: "MeTV",            category: "retro", favorite: false },
-  { number: 402, name: "Antenna TV",      category: "retro", favorite: false },
-  { number: 403, name: "Cozi TV",         category: "retro", favorite: false },
-  { number: 404, name: "TV Land",         category: "retro", favorite: false },
-  { number: 405, name: "Retro TV",        category: "retro", favorite: false },
-  { number: 406, name: "Decades",         category: "retro", favorite: false },
-  { number: 407, name: "Bounce",          category: "retro", favorite: false },
-  { number: 408, name: "Heroes & Icons",  category: "retro", favorite: false },
-  { number: 409, name: "Start TV",        category: "retro", favorite: false },
-  { number: 410, name: "Movies!",         category: "retro", favorite: false },
-  { number: 411, name: "GetTV",           category: "retro", favorite: false },
-  { number: 412, name: "Laff",            category: "retro", favorite: false },
-  { number: 413, name: "Grit",            category: "retro", favorite: false },
-  { number: 414, name: "ION",             category: "retro", favorite: false },
- { number: 415, name: "ION Plus",        category: "retro", favorite: false }
+  /* 24/7 MOVIES */
+  { number: 301, name: "Action Movies 24/7", category: "movies247", favorite: false },
+  { number: 302, name: "Comedy Movies 24/7", category: "movies247", favorite: false },
+  { number: 303, name: "Drama Movies 24/7", category: "movies247", favorite: false },
+  { number: 304, name: "Romance Movies 24/7", category: "movies247", favorite: false },
+  { number: 305, name: "Horror Movies 24/7", category: "movies247", favorite: false },
+  { number: 306, name: "Sci-Fi Movies 24/7", category: "movies247", favorite: false },
+  { number: 307, name: "Classic Movies 24/7", category: "movies247", favorite: false },
+  { number: 308, name: "Family Movies 24/7", category: "movies247", favorite: false },
+
+  /* RETRO */
+  { number: 401, name: "MeTV", category: "retro", favorite: false },
+  { number: 402, name: "Antenna TV", category: "retro", favorite: false },
+  { number: 403, name: "Cozi TV", category: "retro", favorite: false },
+  { number: 404, name: "TV Land", category: "retro", favorite: false },
+  { number: 405, name: "Retro TV", category: "retro", favorite: false },
+  { number: 406, name: "Decades", category: "retro", favorite: false },
+  { number: 407, name: "Bounce", category: "retro", favorite: false }
 ];
-
 /* RENDER CHANNELS */
 const channelList = document.getElementById("channelList");
 
@@ -402,7 +365,6 @@ function renderChannels(filter = "all") {
 
   activateFavoriteStars();
 }
-
 function formatCategory(cat) {
   if (cat === "basic") return "Basic Cable";
   if (cat === "premium") return "Premium";
@@ -422,7 +384,6 @@ function activateFavoriteStars() {
   });
 }
 
-
 /* FILTER BUTTONS */
 const filterButtons = document.querySelectorAll(".filter-btn");
 let currentFilter = "all";
@@ -432,11 +393,10 @@ filterButtons.forEach(btn => {
     document.querySelector(".filter-btn.active").classList.remove("active");
     btn.classList.add("active");
 
-    currentFilter = btn.dataset.filter;
+ currentFilter = btn.dataset.filter;
     renderChannels(currentFilter);
   });
 });
-
 
 /* INITIAL RENDER */
 renderChannels("all");
@@ -444,4 +404,17 @@ renderChannels("all");
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
