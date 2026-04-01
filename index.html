@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Test TV Guide</title>
+  <title>Mary's TV Guide</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
+    /* GENERAL */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -13,10 +15,11 @@
     }
 
     #loginScreen, #app {
-      max-width: 400px;
+      max-width: 600px;
       margin: 0 auto;
     }
 
+    /* LOGIN */
     #loginBox {
       background: #fff;
       padding: 20px;
@@ -46,14 +49,37 @@
       text-align: center;
     }
 
+    /* FILTER BAR */
+    #filterBar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .filter-btn {
+      padding: 8px 12px;
+      background: #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .filter-btn.active {
+      background: #007bff;
+      color: white;
+    }
+
+    /* CHANNEL LIST */
     .channel {
       background: white;
-      padding: 15px;
-      margin-bottom: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
       border-radius: 8px;
       box-shadow: 0 0 5px #ccc;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       cursor: pointer;
     }
 
@@ -62,8 +88,22 @@
       border-left: 5px solid #007bff;
     }
 
+    .channel-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .channel-name {
+      font-weight: bold;
+    }
+
+    .channel-meta {
+      font-size: 12px;
+      color: #555;
+    }
+
     .favorite-star {
-      font-size: 24px;
+      font-size: 22px;
       cursor: pointer;
       color: #bbb;
     }
@@ -71,8 +111,14 @@
     .favorite-star.active {
       color: gold;
     }
+
+    /* VIDEO PLAYER */
+    #videoPlayer {
+      margin-bottom: 15px;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- LOGIN -->
@@ -88,13 +134,30 @@
 
   <!-- APP -->
   <div id="app" style="display:none;">
-    <button id="logoutBtn" style="margin-bottom:20px;">Logout</button>
+
+    <!-- VIDEO PLAYER -->
+    <div id="videoPlayer" style="display:none;">
+      <button id="closeVideoBtn" style="margin-bottom:10px;">Back to Guide</button>
+      <iframe id="videoFrame" width="100%" height="250" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <button id="logoutBtn" style="margin-bottom:15px;">Logout</button>
+
+    <!-- FILTERS -->
+    <div id="filterBar">
+      <div class="filter-btn active" data-filter="all">All</div>
+      <div class="filter-btn" data-filter="basic">Basic</div>
+      <div class="filter-btn" data-filter="premium">Premium</div>
+      <div class="filter-btn" data-filter="movies247">24/7 Movies</div>
+      <div class="filter-btn" data-filter="retro">Retro</div>
+    </div>
+
     <h3>Channels</h3>
     <div id="channelList"></div>
   </div>
 
   <script>
-    // LOGIN
+    /* LOGIN */
     const loginScreen = document.getElementById("loginScreen");
     const app = document.getElementById("app");
     const loginBtn = document.getElementById("loginBtn");
@@ -117,7 +180,7 @@
       }
     });
 
-    // LOGOUT
+    /* LOGOUT */
     document.getElementById("logoutBtn").addEventListener("click", () => {
       app.style.display = "none";
       loginScreen.style.display = "flex";
@@ -126,29 +189,185 @@
       loginError.textContent = "";
     });
 
-    // CHANNELS
+    /* CHANNELS (100+ with categories and YouTube links) */
+    const YT1 = "https://www.youtube.com/watch?v=ysz5S6PUM-U";
+    const YT2 = "https://www.youtube.com/watch?v=jNQXAC9IVRw";
+    const YT3 = "https://www.youtube.com/watch?v=oUFJJNQGwhk";
+    const YT4 = "https://www.youtube.com/watch?v=ScMzIvxBSi4";
+
     const channels = [
-      { number: 2, name: "ABC", favorite: false },
-      { number: 4, name: "NBC", favorite: false },
-      { number: 5, name: "FOX", favorite: false }
+      /* BASIC 2–49 (48 channels) */
+      { number: 2, name: "ABC", category: "basic", favorite: false, video: YT1 },
+      { number: 3, name: "Local News 3", category: "basic", favorite: false, video: YT2 },
+      { number: 4, name: "NBC", category: "basic", favorite: false, video: YT3 },
+      { number: 5, name: "FOX", category: "basic", favorite: false, video: YT4 },
+      { number: 6, name: "Local 6", category: "basic", favorite: false, video: YT1 },
+      { number: 7, name: "CBS", category: "basic", favorite: false, video: YT2 },
+      { number: 8, name: "Local 8", category: "basic", favorite: false, video: YT3 },
+      { number: 9, name: "PBS", category: "basic", favorite: false, video: YT4 },
+      { number: 10, name: "Local 10", category: "basic", favorite: false, video: YT1 },
+      { number: 11, name: "CW", category: "basic", favorite: false, video: YT2 },
+      { number: 12, name: "Local 12", category: "basic", favorite: false, video: YT3 },
+      { number: 13, name: "MyNetworkTV", category: "basic", favorite: false, video: YT4 },
+      { number: 14, name: "News Channel 14", category: "basic", favorite: false, video: YT1 },
+      { number: 15, name: "Sports 15", category: "basic", favorite: false, video: YT2 },
+      { number: 16, name: "Kids 16", category: "basic", favorite: false, video: YT3 },
+      { number: 17, name: "Family 17", category: "basic", favorite: false, video: YT4 },
+      { number: 18, name: "Local 18", category: "basic", favorite: false, video: YT1 },
+      { number: 19, name: "Local 19", category: "basic", favorite: false, video: YT2 },
+      { number: 20, name: "ESPN", category: "basic", favorite: false, video: YT3 },
+      { number: 21, name: "ESPN2", category: "basic", favorite: false, video: YT4 },
+      { number: 22, name: "TNT", category: "basic", favorite: false, video: YT1 },
+      { number: 23, name: "TBS", category: "basic", favorite: false, video: YT2 },
+      { number: 24, name: "USA Network", category: "basic", favorite: false, video: YT3 },
+      { number: 25, name: "FX", category: "basic", favorite: false, video: YT4 },
+      { number: 26, name: "A&E", category: "basic", favorite: false, video: YT1 },
+      { number: 27, name: "History Channel", category: "basic", favorite: false, video: YT2 },
+      { number: 28, name: "Discovery Channel", category: "basic", favorite: false, video: YT3 },
+      { number: 29, name: "National Geographic", category: "basic", favorite: false, video: YT4 },
+      { number: 30, name: "HGTV", category: "basic", favorite: false, video: YT1 },
+      { number: 31, name: "Food Network", category: "basic", favorite: false, video: YT2 },
+      { number: 32, name: "Travel Channel", category: "basic", favorite: false, video: YT3 },
+      { number: 33, name: "Lifetime", category: "basic", favorite: false, video: YT4 },
+      { number: 34, name: "Hallmark Channel", category: "basic", favorite: false, video: YT1 },
+      { number: 35, name: "Bravo", category: "basic", favorite: false, video: YT2 },
+      { number: 36, name: "E!", category: "basic", favorite: false, video: YT3 },
+      { number: 37, name: "Syfy", category: "basic", favorite: false, video: YT4 },
+      { number: 38, name: "Oxygen", category: "basic", favorite: false, video: YT1 },
+      { number: 39, name: "BET", category: "basic", favorite: false, video: YT2 },
+      { number: 40, name: "VH1", category: "basic", favorite: false, video: YT3 },
+      { number: 41, name: "MTV", category: "basic", favorite: false, video: YT4 },
+      { number: 42, name: "Comedy Central", category: "basic", favorite: false, video: YT1 },
+      { number: 43, name: "Cartoon Network", category: "basic", favorite: false, video: YT2 },
+      { number: 44, name: "Nickelodeon", category: "basic", favorite: false, video: YT3 },
+      { number: 45, name: "Disney Channel", category: "basic", favorite: false, video: YT4 },
+      { number: 46, name: "Animal Planet", category: "basic", favorite: false, video: YT1 },
+      { number: 47, name: "TLC", category: "basic", favorite: false, video: YT2 },
+      { number: 48, name: "Investigation Discovery", category: "basic", favorite: false, video: YT3 },
+      { number: 49, name: "Weather Channel", category: "basic", favorite: false, video: YT4 },
+
+      /* PREMIUM 201–240 (40 channels) */
+      { number: 201, name: "HBO", category: "premium", favorite: false, video: YT1 },
+      { number: 202, name: "HBO 2", category: "premium", favorite: false, video: YT2 },
+      { number: 203, name: "HBO Family", category: "premium", favorite: false, video: YT3 },
+      { number: 204, name: "HBO Signature", category: "premium", favorite: false, video: YT4 },
+      { number: 205, name: "HBO Comedy", category: "premium", favorite: false, video: YT1 },
+      { number: 206, name: "HBO Zone", category: "premium", favorite: false, video: YT2 },
+      { number: 207, name: "HBO Latino", category: "premium", favorite: false, video: YT3 },
+      { number: 210, name: "Showtime", category: "premium", favorite: false, video: YT4 },
+      { number: 211, name: "Showtime 2", category: "premium", favorite: false, video: YT1 },
+      { number: 212, name: "Showtime Showcase", category: "premium", favorite: false, video: YT2 },
+      { number: 213, name: "Showtime Extreme", category: "premium", favorite: false, video: YT3 },
+      { number: 214, name: "Showtime Family", category: "premium", favorite: false, video: YT4 },
+      { number: 220, name: "Starz", category: "premium", favorite: false, video: YT1 },
+      { number: 221, name: "Starz Edge", category: "premium", favorite: false, video: YT2 },
+      { number: 222, name: "Starz Cinema", category: "premium", favorite: false, video: YT3 },
+      { number: 223, name: "Starz Kids & Family", category: "premium", favorite: false, video: YT4 },
+      { number: 230, name: "Cinemax", category: "premium", favorite: false, video: YT1 },
+      { number: 231, name: "MoreMAX", category: "premium", favorite: false, video: YT2 },
+      { number: 232, name: "ActionMAX", category: "premium", favorite: false, video: YT3 },
+      { number: 233, name: "ThrillerMAX", category: "premium", favorite: false, video: YT4 },
+      { number: 234, name: "5StarMAX", category: "premium", favorite: false, video: YT1 },
+      { number: 235, name: "MovieMAX", category: "premium", favorite: false, video: YT2 },
+      { number: 236, name: "OuterMAX", category: "premium", favorite: false, video: YT3 },
+      { number: 237, name: "Cinemax Latino", category: "premium", favorite: false, video: YT4 },
+      { number: 240, name: "The Movie Channel", category: "premium", favorite: false, video: YT1 },
+      { number: 241, name: "TMC Xtra", category: "premium", favorite: false, video: YT2 },
+      { number: 242, name: "Encore", category: "premium", favorite: false, video: YT3 },
+      { number: 243, name: "Encore Action", category: "premium", favorite: false, video: YT4 },
+      { number: 244, name: "Encore Classic", category: "premium", favorite: false, video: YT1 },
+      { number: 245, name: "Encore Black", category: "premium", favorite: false, video: YT2 },
+      { number: 246, name: "Encore Family", category: "premium", favorite: false, video: YT3 },
+      { number: 247, name: "Encore Suspense", category: "premium", favorite: false, video: YT4 },
+      { number: 248, name: "Encore Westerns", category: "premium", favorite: false, video: YT1 },
+      { number: 249, name: "Indie Film Channel", category: "premium", favorite: false, video: YT2 },
+      { number: 250, name: "Classic Film Vault", category: "premium", favorite: false, video: YT3 },
+      { number: 251, name: "Premium Drama HD", category: "premium", favorite: false, video: YT4 },
+      { number: 252, name: "Premium Comedy HD", category: "premium", favorite: false, video: YT1 },
+      { number: 253, name: "Premium Action HD", category: "premium", favorite: false, video: YT2 },
+
+      /* 24/7 MOVIES 301–320 (20 channels) */
+      { number: 301, name: "Action Movies 24/7", category: "movies247", favorite: false, video: YT1 },
+      { number: 302, name: "Comedy Movies 24/7", category: "movies247", favorite: false, video: YT2 },
+      { number: 303, name: "Drama Movies 24/7", category: "movies247", favorite: false, video: YT3 },
+      { number: 304, name: "Romance Movies 24/7", category: "movies247", favorite: false, video: YT4 },
+      { number: 305, name: "Horror Movies 24/7", category: "movies247", favorite: false, video: YT1 },
+      { number: 306, name: "Sci-Fi Movies 24/7", category: "movies247", favorite: false, video: YT2 },
+      { number: 307, name: "Classic Movies 24/7", category: "movies247", favorite: false, video: YT3 },
+      { number: 308, name: "Family Movies 24/7", category: "movies247", favorite: false, video: YT4 },
+      { number: 309, name: "Thriller Movies 24/7", category: "movies247", favorite: false, video: YT1 },
+      { number: 310, name: "Mystery Movies 24/7", category: "movies247", favorite: false, video: YT2 },
+      { number: 311, name: "Holiday Movies 24/7", category: "movies247", favorite: false, video: YT3 },
+      { number: 312, name: "Animated Movies 24/7", category: "movies247", favorite: false, video: YT4 },
+      { number: 313, name: "Rom-Com Movies 24/7", category: "movies247", favorite: false, video: YT1 },
+      { number: 314, name: "Adventure Movies 24/7", category: "movies247", favorite: false, video: YT2 },
+      { number: 315, name: "Crime Movies 24/7", category: "movies247", favorite: false, video: YT3 },
+      { number: 316, name: "War Movies 24/7", category: "movies247", favorite: false, video: YT4 },
+      { number: 317, name: "Epic Movies 24/7", category: "movies247", favorite: false, video: YT1 },
+      { number: 318, name: "Biopic Movies 24/7", category: "movies247", favorite: false, video: YT2 },
+      { number: 319, name: "Indie Movies 24/7", category: "movies247", favorite: false, video: YT3 },
+      { number: 320, name: "Cult Classics 24/7", category: "movies247", favorite: false, video: YT4 },
+
+      /* RETRO 401–420 (20 channels) */
+      { number: 401, name: "MeTV", category: "retro", favorite: false, video: YT1 },
+      { number: 402, name: "Antenna TV", category: "retro", favorite: false, video: YT2 },
+      { number: 403, name: "Cozi TV", category: "retro", favorite: false, video: YT3 },
+      { number: 404, name: "TV Land", category: "retro", favorite: false, video: YT4 },
+      { number: 405, name: "Retro TV", category: "retro", favorite: false, video: YT1 },
+      { number: 406, name: "Decades", category: "retro", favorite: false, video: YT2 },
+      { number: 407, name: "Bounce", category: "retro", favorite: false, video: YT3 },
+      { number: 408, name: "Classic Sitcoms", category: "retro", favorite: false, video: YT4 },
+      { number: 409, name: "Classic Drama", category: "retro", favorite: false, video: YT1 },
+      { number: 410, name: "Classic Westerns", category: "retro", favorite: false, video: YT2 },
+      { number: 411, name: "Black & White Classics", category: "retro", favorite: false, video: YT3 },
+      { number: 412, name: "Retro Cartoons", category: "retro", favorite: false, video: YT4 },
+      { number: 413, name: "Retro Game Shows", category: "retro", favorite: false, video: YT1 },
+      { number: 414, name: "Retro Variety Shows", category: "retro", favorite: false, video: YT2 },
+      { number: 415, name: "Retro Mystery", category: "retro", favorite: false, video: YT3 },
+      { number: 416, name: "Retro Crime", category: "retro", favorite: false, video: YT4 },
+      { number: 417, name: "Retro Sci-Fi", category: "retro", favorite: false, video: YT1 },
+      { number: 418, name: "Retro Horror", category: "retro", favorite: false, video: YT2 },
+      { number: 419, name: "Retro Family", category: "retro", favorite: false, video: YT3 },
+      { number: 420, name: "Retro Late Night", category: "retro", favorite: false, video: YT4 }
     ];
 
     const channelList = document.getElementById("channelList");
+    const videoPlayer = document.getElementById("videoPlayer");
+    const videoFrame = document.getElementById("videoFrame");
 
-    function renderChannels() {
+    function formatCategory(cat) {
+      if (cat === "basic") return "Basic Cable";
+      if (cat === "premium") return "Premium";
+      if (cat === "movies247") return "24/7 Movie Channel";
+      if (cat === "retro") return "Retro TV";
+      return "";
+    }
+
+    function renderChannels(filter = "all") {
       channelList.innerHTML = "";
+
       channels.forEach((ch, index) => {
+        if (filter !== "all" && ch.category !== filter) return;
+
         const div = document.createElement("div");
         div.className = "channel";
+
         div.innerHTML = `
-          <div>${ch.number} – ${ch.name}</div>
+          <div class="channel-info">
+            <div class="channel-name">${ch.number} – ${ch.name}</div>
+            <div class="channel-meta">${formatCategory(ch.category)}</div>
+          </div>
           <span class="favorite-star ${ch.favorite ? "active" : ""}" data-index="${index}">★</span>
         `;
 
-        // highlight on click
+        /* CHANNEL CLICK → HIGHLIGHT + PLAY VIDEO */
         div.addEventListener("click", () => {
           document.querySelectorAll(".channel").forEach(c => c.classList.remove("selected"));
           div.classList.add("selected");
+
+          videoFrame.src = ch.video.replace("watch?v=", "embed/");
+          videoPlayer.style.display = "block";
+          channelList.style.display = "none";
         });
 
         channelList.appendChild(div);
@@ -157,10 +376,11 @@
       activateFavoriteStars();
     }
 
+    /* FAVORITES */
     function activateFavoriteStars() {
       document.querySelectorAll(".favorite-star").forEach(star => {
         star.addEventListener("click", e => {
-          e.stopPropagation(); // don’t break channel click
+          e.stopPropagation();
           const index = e.target.dataset.index;
           channels[index].favorite = !channels[index].favorite;
           e.target.classList.toggle("active");
@@ -168,7 +388,29 @@
       });
     }
 
-    renderChannels();
+    /* CLOSE VIDEO */
+    document.getElementById("closeVideoBtn").addEventListener("click", () => {
+      videoPlayer.style.display = "none";
+      videoFrame.src = "";
+      channelList.style.display = "block";
+    });
+
+    /* FILTER BUTTONS */
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    let currentFilter = "all";
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelector(".filter-btn.active").classList.remove("active");
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        renderChannels(currentFilter);
+      });
+    });
+
+    /* INITIAL RENDER */
+    renderChannels("all");
   </script>
+
 </body>
 </html>
