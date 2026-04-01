@@ -342,8 +342,12 @@ function activateFavoriteStars() {
   document.querySelectorAll(".favorite-star").forEach(star => {
     star.addEventListener("click", e => {
       const index = e.target.dataset.index;
+
+      // Toggle the favorite value in the data
       channels[index].favorite = !channels[index].favorite;
-      e.target.classList.toggle("active");
+
+      // Re-render the list so the star stays yellow
+      renderChannels();
     });
   });
 }
