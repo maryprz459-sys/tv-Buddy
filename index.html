@@ -380,10 +380,9 @@ function activateFavoriteStars() {
       const index = e.target.dataset.index;
       channels[index].favorite = !channels[index].favorite;
       e.target.classList.toggle("active");
-    });
-  });
+    }); 
+   });
 }
-
 /* FILTER BUTTONS */
 const filterButtons = document.querySelectorAll(".filter-btn");
 let currentFilter = "all";
@@ -393,7 +392,7 @@ filterButtons.forEach(btn => {
     document.querySelector(".filter-btn.active").classList.remove("active");
     btn.classList.add("active");
 
- currentFilter = btn.dataset.filter;
+    currentFilter = btn.dataset.filter;
     renderChannels(currentFilter);
   });
 });
