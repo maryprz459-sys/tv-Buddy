@@ -5,10 +5,9 @@
 <title>My TV Guide</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 <style>
-/* ------------------------------
-   GLOBAL STYLES
---------------------------------*/
+/* GLOBAL */
 body {
   margin: 0;
   background: #111;
@@ -17,15 +16,10 @@ body {
   overflow-x: hidden;
 }
 
-/* ------------------------------
-   LOADING SCREEN
---------------------------------*/
+/* LOADING */
 .loading-screen {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: #0d0d0d;
   display: flex;
   flex-direction: column;
@@ -35,7 +29,6 @@ body {
   animation: fadeOut 0.5s ease forwards;
   animation-delay: 1.8s;
 }
-
 .spinner {
   width: 55px;
   height: 55px;
@@ -43,67 +36,58 @@ body {
   border-top-color: #1e90ff;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
-}
-
-.loading-text {
+}.loading-text {
   margin-top: 15px;
   color: #ccc;
   font-size: 1rem;
   letter-spacing: 1px;
 }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes fadeOut {
-  to { opacity: 0; visibility: hidden; }
-}
-
-/* ------------------------------
-   LOGIN SCREEN
---------------------------------*/
+/* LOGIN */
 .login-container {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: #111;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 .login-box {
   background: #1c1c1c;
   padding: 25px;
   border-radius: 10px;
   width: 300px;
 }
-
 .login-box h2 {
   margin-top: 0;
   text-align: center;
 }
-
-.login-box input {
+.login-box label {
+  font-size: 0.9rem;
+}
+login-box input {
   width: 100%;
   padding: 8px;
   margin: 6px 0 12px;
   border-radius: 6px;
   border: none;
-}
-
+.login-box button {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  background: #1e90ff;
+  color: #fff;
+  cursor: pointer;
 .login-error {
   color: #ff4444;
   margin-bottom: 10px;
   text-align: center;
+  min-height: 18px;
 }
-
-/* ------------------------------
-   HEADER + LOGOUT
---------------------------------*/
+/* HEADER */
 header {
   background: #222;
   padding: 15px;
@@ -113,7 +97,6 @@ header {
   top: 0;
   z-index: 10;
 }
-
 .logout-btn {
   float: right;
   background: #333;
@@ -123,17 +106,14 @@ header {
   border-radius: 6px;
   cursor: pointer;
 }
-
-/* ------------------------------
-   FILTER BAR
---------------------------------*/
+/* FILTER BAR */
 .filter-bar {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   padding: 10px;
   background: #181818;
 }
-
 .filter-btn {
   background: #333;
   border: none;
@@ -141,15 +121,15 @@ header {
   border-radius: 6px;
   color: #fff;
   cursor: pointer;
+  font-size: 0.9rem;
 }
-
 .filter-btn.active {
   background: #1e90ff;
 }
-
-/* ------------------------------
-   CHANNEL LIST
---------------------------------*/
+/* CHANNEL LIST */
+#channelList {
+  padding: 10px;
+}
 .channel {
   display: flex;
   align-items: center;
@@ -158,60 +138,41 @@ header {
   border-bottom: 1px solid #333;
   transition: 0.25s;
 }
-
 .channel:hover {
   background: #1c1c1c;
   box-shadow: 0 0 12px rgba(255,255,255,0.15);
 }
-
+.channel-info {
+  display: flex;
+  flex-direction: column;
+}
+.channel-name {
+  font-size: 1rem;
+  font-weight: bold;
+}
+.channel-meta {
+  font-size: 0.8rem;
+  color: #aaa;
+}
 .favorite-star {
   margin-left: auto;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   cursor: pointer;
   color: #555;
-}
-
 .favorite-star.active {
   color: #ffd700;
 }
-
-/* ------------------------------
-   PROGRAM GRID
---------------------------------*/
-.program {
-  background: #2a2a2a;
-  margin: 6px 0;
-  padding: 10px;
-  border-radius: 6px;
-  transition: opacity .25s, transform .25s;
-}
-
-.program:hover {
-  background: #3a3a3a;
-  transform: scale(1.02);
-}
-
-.program.hide {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-/* ------------------------------
-   MINI EPG POPUP
---------------------------------*/
-.epg-popup {
-  position: fixed;
-  background: #1c1c1c;
-  padding: 12px;
-  border-radius: 8px;
-  display: none;
-  z-index: 9999;
-  width: 220px;
+/* SMALL SCREEN */
+@media (max-width: 600px) {
+  .channel-name {
+    font-size: 0.95rem;
+  }
 }
 </style>
 </head>
 
 <body>
+
 
 <!-- LOADING SCREEN -->
 <div id="loadingScreen" class="loading-screen">
@@ -225,15 +186,16 @@ header {
     <h2>My TV Guide Login</h2>
     <div class="login-error" id="loginError"></div>
 
-    <label>Username</label>
+    <label for="username">Username</label>
     <input id="username" type="text">
 
-    <label>Password</label>
+    <label for="password">Password</label>
     <input id="password" type="password">
 
     <button id="loginBtn">Enter</button>
   </div>
 </div>
+
 
 <!-- MAIN APP -->
 <div id="app" style="display:none;">
@@ -247,38 +209,36 @@ header {
   <button data-filter="all" class="filter-btn active">All</button>
   <button data-filter="basic" class="filter-btn">Basic</button>
   <button data-filter="premium" class="filter-btn">Premium</button>
-  <button data-filter="movies" class="filter-btn">Movies</button>
+  <button data-filter="movies247" class="filter-btn">24/7 Movies</button>
+  <button data-filter="retro" class="filter-btn">Retro TV</button>
 </div>
 
 <div id="channelList"></div>
 
-<div id="epgPopup" class="epg-popup"></div>
-
 </div>
 
 <script>
-/* ------------------------------
-   LOADING SCREEN
---------------------------------*/
+
+/* LOADING */
 window.addEventListener("load", () => {
   const loader = document.getElementById("loadingScreen");
   setTimeout(() => loader.style.display = "none", 2000);
 });
 
-/* ------------------------------
-   LOGIN SYSTEM
---------------------------------*/
+/* LOGIN */
 const loginBtn = document.getElementById("loginBtn");
 const loginScreen = document.getElementById("loginScreen");
 const app = document.getElementById("app");
 const loginError = document.getElementById("loginError");
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
 
 const VALID_USERNAME = "mary";
 const VALID_PASSWORD = "mypassword123";
 
 loginBtn.addEventListener("click", () => {
-  const user = username.value.trim();
-  const pass = password.value;
+  const user = usernameInput.value.trim();
+  const pass = passwordInput.value;
 
   if (user === VALID_USERNAME && pass === VALID_PASSWORD) {
     loginScreen.style.display = "none";
@@ -288,42 +248,152 @@ loginBtn.addEventListener("click", () => {
   }
 });
 
-/* ------------------------------
-   LOGOUT
---------------------------------*/
+
+/* LOGOUT */
+const logoutBtn = document.getElementById("logoutBtn");
 logoutBtn.addEventListener("click", () => {
   app.style.display = "none";
   loginScreen.style.display = "flex";
-  username.value = "";
-  password.value = "";
+  usernameInput.value = "";
+  passwordInput.value = "";
   loginError.textContent = "";
 });
 
-/* ------------------------------
-   CHANNEL DATA
---------------------------------*/
+/* CHANNEL DATA: 100+ CHANNELS WITH NUMBERS */
+
+/* category:
+   - "basic"
+   - "premium"
+   - "movies247"
+   - "retro"
+*/
+
 const channels = [
-  { name: "HBO", category: "premium", favorite: false },
-  { name: "ESPN", category: "basic", favorite: false },
-  { name: "Showtime", category: "premium", favorite: false },
-  { name: "AMC", category: "basic", favorite: false },
-  { name: "Starz", category: "premium", favorite: false },
-  { name: "TCM Movies", category: "movies", favorite: false }
+  /* BASIC CABLE */
+  { number: 2,   name: "ABC",              category: "basic", favorite: false },
+  { number: 4,   name: "NBC",              category: "basic", favorite: false },
+  { number: 5,   name: "FOX",              category: "basic", favorite: false },
+  { number: 7,   name: "CBS",              category: "basic", favorite: false },
+  { number: 9,   name: "PBS",              category: "basic", favorite: false },
+  { number: 11,  name: "CW",               category: "basic", favorite: false },
+  { number: 13,  name: "MyNetworkTV",      category: "basic", favorite: false },
+  { number: 20,  name: "ESPN",             category: "basic", favorite: false },
+  { number: 21,  name: "ESPN2",            category: "basic", favorite: false },
+  { number: 22,  name: "TNT",              category: "basic", favorite: false },
+  { number: 23,  name: "TBS",              category: "basic", favorite: false },
+  { number: 24,  name: "USA Network",      category: "basic", favorite: false },
+  { number: 25,  name: "FX",               category: "basic", favorite: false },
+  { number: 26,  name: "A&E",              category: "basic", favorite: false },
+  { number: 27,  name: "History Channel",  category: "basic", favorite: false },
+  { number: 28,  name: "Discovery Channel",category: "basic", favorite: false },
+  { number: 29,  name: "National Geographic",category: "basic", favorite: false },
+  { number: 30,  name: "HGTV",             category: "basic", favorite: false },
+  { number: 31,  name: "Food Network",     category: "basic", favorite: false },
+  { number: 32,  name: "Travel Channel",   category: "basic", favorite: false },
+  { number: 33,  name: "Lifetime",         category: "basic", favorite: false },
+  { number: 34,  name: "Hallmark Channel", category: "basic", favorite: false },
+  { number: 35,  name: "Bravo",            category: "basic", favorite: false },
+  { number: 36,  name: "E!",               category: "basic", favorite: false },
+  { number: 37,  name: "Syfy",             category: "basic", favorite: false },
+  { number: 38,  name: "Oxygen",           category: "basic", favorite: false },
+  { number: 39,  name: "BET",              category: "basic", favorite: false },
+  { number: 40,  name: "VH1",              category: "basic", favorite: false },
+  { number: 41,  name: "MTV",              category: "basic", favorite: false },
+  { number: 42,  name: "Comedy Central",   category: "basic", favorite: false },
+  { number: 43,  name: "Cartoon Network",  category: "basic", favorite: false },
+  { number: 44,  name: "Nickelodeon",      category: "basic", favorite: false },
+  { number: 45,  name: "Disney Channel",   category: "basic", favorite: false },
+  { number: 46,  name: "Animal Planet",    category: "basic", favorite: false },
+  { number: 47,  name: "TLC",              category: "basic", favorite: false },
+  { number: 48,  name: "Investigation Discovery",category: "basic", favorite: false },
+  { number: 49,  name: "Weather Channel",  category: "basic", favorite: false },
+  { number: 50,  name: "NewsNation",       category: "basic", favorite: false },
+  { number: 51,  name: "CNN",              category: "basic", favorite: false },
+  { number: 52,  name: "MSNBC",            category: "basic", favorite: false },
+  { number: 53,  name: "Fox News",         category: "basic", favorite: false },
+  { number: 54,  name: "Bloomberg",        category: "basic", favorite: false },
+  { number: 55,  name: "C-SPAN",           category: "basic", favorite: false },
+
+  /* PREMIUM */
+  { number: 201, name: "HBO",              category: "premium", favorite: false },
+  { number: 202, name: "HBO 2",            category: "premium", favorite: false },
+  { number: 203, name: "HBO Family",       category: "premium", favorite: false },
+  { number: 204, name: "HBO Signature",    category: "premium", favorite: false },
+  { number: 205, name: "HBO Comedy",       category: "premium", favorite: false },
+  { number: 210, name: "Showtime",         category: "premium", favorite: false },
+  { number: 211, name: "Showtime 2",       category: "premium", favorite: false },
+  { number: 212, name: "Showtime Showcase",category: "premium", favorite: false },
+  { number: 213, name: "Showtime Extreme", category: "premium", favorite: false },
+  { number: 220, name: "Starz",            category: "premium", favorite: false },
+  { number: 221, name: "Starz Edge",       category: "premium", favorite: false },
+  { number: 222, name: "Starz Cinema",     category: "premium", favorite: false },
+  { number: 223, name: "Starz Encore",     category: "premium", favorite: false },
+  { number: 230, name: "Cinemax",          category: "premium", favorite: false },
+  { number: 231, name: "MoreMAX",          category: "premium", favorite: false },
+  { number: 232, name: "ActionMAX",        category: "premium", favorite: false },
+  { number: 233, name: "ThrillerMAX",      category: "premium", favorite: false },
+  { number: 240, name: "The Movie Channel",category: "premium", favorite: false },
+  { number: 241, name: "TMC Xtra",         category: "premium", favorite: false },
+  { number: 250, name: "Epix",             category: "premium", favorite: false },
+  { number: 251, name: "Epix 2",           category: "premium", favorite: false },
+  { number: 252, name: "Epix Hits",        category: "premium", favorite: false },
+
+  /* 24/7 MOVIE CHANNELS */
+  { number: 301, name: "Action Movies 24/7",     category: "movies247", favorite: false },
+  { number: 302, name: "Comedy Movies 24/7",     category: "movies247", favorite: false },
+  { number: 303, name: "Drama Movies 24/7",      category: "movies247", favorite: false },
+  { number: 304, name: "Romance Movies 24/7",    category: "movies247", favorite: false },
+  { number: 305, name: "Horror Movies 24/7",     category: "movies247", favorite: false },
+  { number: 306, name: "Sci-Fi Movies 24/7",     category: "movies247", favorite: false },
+  { number: 307, name: "Classic Movies 24/7",    category: "movies247", favorite: false },
+  { number: 308, name: "Family Movies 24/7",     category: "movies247", favorite: false },
+  { number: 309, name: "Holiday Movies 24/7",    category: "movies247", favorite: false },
+  { number: 310, name: "Black Cinema 24/7",      category: "movies247", favorite: false },
+  { number: 311, name: "Latino Movies 24/7",     category: "movies247", favorite: false },
+  { number: 312, name: "Thriller Movies 24/7",   category: "movies247", favorite: false },
+  { number: 313, name: "Adventure Movies 24/7",  category: "movies247", favorite: false },
+  { number: 314, name: "Documentary Movies 24/7",category: "movies247", favorite: false },
+  { number: 315, name: "Indie Movies 24/7",      category: "movies247", favorite: false },
+  { number: 316, name: "Animated Movies 24/7",   category: "movies247", favorite: false },
+  { number: 317, name: "Superhero Movies 24/7",  category: "movies247", favorite: false },
+  { number: 318, name: "Western Movies 24/7",    category: "movies247", favorite: false },
+  { number: 319, name: "Crime Movies 24/7",      category: "movies247", favorite: false },
+  { number: 320, name: "Epic Movies 24/7",       category: "movies247", favorite: false },
+ /* RETRO TV */
+  { number: 401, name: "MeTV",            category: "retro", favorite: false },
+  { number: 402, name: "Antenna TV",      category: "retro", favorite: false },
+  { number: 403, name: "Cozi TV",         category: "retro", favorite: false },
+  { number: 404, name: "TV Land",         category: "retro", favorite: false },
+  { number: 405, name: "Retro TV",        category: "retro", favorite: false },
+  { number: 406, name: "Decades",         category: "retro", favorite: false },
+  { number: 407, name: "Bounce",          category: "retro", favorite: false },
+  { number: 408, name: "Heroes & Icons",  category: "retro", favorite: false },
+  { number: 409, name: "Start TV",        category: "retro", favorite: false },
+  { number: 410, name: "Movies!",         category: "retro", favorite: false },
+  { number: 411, name: "GetTV",           category: "retro", favorite: false },
+  { number: 412, name: "Laff",            category: "retro", favorite: false },
+  { number: 413, name: "Grit",            category: "retro", favorite: false },
+  { number: 414, name: "ION",             category: "retro", favorite: false },
+ { number: 415, name: "ION Plus",        category: "retro", favorite: false }
 ];
 
-/* ------------------------------
-   RENDER CHANNEL LIST
---------------------------------*/
+/* RENDER CHANNELS */
 const channelList = document.getElementById("channelList");
 
-function renderChannels() {
+function renderChannels(filter = "all") {
   channelList.innerHTML = "";
 
   channels.forEach((ch, index) => {
+    if (filter !== "all" && ch.category !== filter) return;
+
     const div = document.createElement("div");
     div.className = "channel";
+
     div.innerHTML = `
-      ${ch.name}
+      <div class="channel-info">
+        <div class="channel-name">${ch.number} – ${ch.name}</div>
+        <div class="channel-meta">${formatCategory(ch.category)}</div>
+      </div>
       <span class="favorite-star ${ch.favorite ? "active" : ""}" data-index="${index}">★</span>
     `;
 
@@ -333,44 +403,45 @@ function renderChannels() {
   activateFavoriteStars();
 }
 
-renderChannels();
+function formatCategory(cat) {
+  if (cat === "basic") return "Basic Cable";
+  if (cat === "premium") return "Premium";
+  if (cat === "movies247") return "24/7 Movie Channel";
+  if (cat === "retro") return "Retro TV";
+  return "";
+}
 
-/* ------------------------------
-   FAVORITES
---------------------------------*/
+/* FAVORITES */
 function activateFavoriteStars() {
   document.querySelectorAll(".favorite-star").forEach(star => {
     star.addEventListener("click", e => {
       const index = e.target.dataset.index;
-
-      // Toggle the favorite value in the data
       channels[index].favorite = !channels[index].favorite;
-
-      // Re-render the list so the star stays yellow
-      renderChannels();
+      e.target.classList.toggle("active");
     });
   });
 }
 
-/* ------------------------------
-   FILTER BUTTONS
---------------------------------*/
+
+/* FILTER BUTTONS */
 const filterButtons = document.querySelectorAll(".filter-btn");
+let currentFilter = "all";
 
 filterButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelector(".filter-btn.active").classList.remove("active");
     btn.classList.add("active");
 
-    const filter = btn.dataset.filter;
-
-    document.querySelectorAll(".channel").forEach((div, index) => {
-      const ch = channels[index];
-      div.style.display = (filter === "all" || ch.category === filter) ? "flex" : "none";
-    });
+    currentFilter = btn.dataset.filter;
+    renderChannels(currentFilter);
   });
 });
+
+
+/* INITIAL RENDER */
+renderChannels("all");
 </script>
 
 </body>
 </html>
+
