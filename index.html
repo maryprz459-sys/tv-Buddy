@@ -1,715 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Custom TV Guide</title>
-  <style>
-    body {
-      background-color: #121212;
-      color: #f1f1f1;
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    h1 {
-      color: #00bcd4;
-    }
-    .channel {
-      margin-bottom: 20px;
-      padding: 10px;
-      border: 1px solid #333;
-      border-radius: 8px;
-      background-color: #1e1e1e;
-    }
-    .channel-name {
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 8px;
-    }
-    .links a {
-      margin-right: 10px;
-      padding: 6px 10px;
-      border-radius: 5px;
-      text-decoration: none;
-      font-size: 14px;
-      display: inline-block;
-    }
-    .daddylive { background-color: #2196f3; color: white; }
-    .tvpass { background-color: #4caf50; color: white; }
-    .tvgarden { background-color: #ff5722; color: white; }
-  </style>
+<meta charset="UTF-8">
+<title>Mary's TV Guide</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* GENERAL */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+}
+
+/* LOADING SCREEN */
+#loadingScreen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  font-weight: bold;
+  z-index: 9999;
+}
+
+/* LOGIN SCREEN */
+#loginScreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: white;
+}
+
+#loginBox {
+  background: #fff;
+  padding: 20px;
+  width: 280px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #ccc;
+}
+
+#loginBox input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+}
+
+#loginBtn {
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+#loginError {
+  color: red;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* APP */
+#app {
+  display: none;
+  padding: 20px;
+}
+
+/* FILTER BAR */
+#filterBar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-btn {
+  padding: 10px 15px;
+  background: #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.filter-btn.active {
+  background: #007bff;
+  color: white;
+}
+
+/* CHANNEL LIST */
+.channel {
+  background: white;
+  padding: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 8px;
+  box-shadow: 0 0 5px #ccc;
+}
+
+.favorite-star {
+  font-size: 24px;
+  cursor: pointer;
+  color: #bbb;
+}
+
+.favorite-star.active {
+  color: gold;
+}
+</style>
 </head>
+
 <body>
-  <h1>Custom TV Guide</h1>
-
-  <div class="channel">
-  <div class="channel-name">ABC USA</div>
-  <div class="links">
-    <!-- No links available -->
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">A&E USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-302.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/ae-us-eastern-feed" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">AMC USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-303.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/amc-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/6Yij9F1pUCWLk3" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Animal Planet</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-304.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/animal-planet-us-east" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Adult Swim</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-295.php" target="_blank">DaddyLive</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">AXS TV USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-742.php" target="_blank">DaddyLive</a>
-    <a class="tvgarden" href="https://tv.garden/us/KRBnxDFCewaGsS" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Boomerang</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-648.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/boomerang" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">BBC America (BBCA)</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-305.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/bbc-america-east" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/5PyTtPYUdiGgB2" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">BET USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-306.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/bet-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/aekuurkeYmyQdo" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Bravo USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-307.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/bravo-usa-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/W2vAcGpxa7hK2x" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Channel 4 UK</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-354.php" target="_blank">DaddyLive</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Channel 5 UK</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-355.php" target="_blank">DaddyLive</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">COZI TV USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-748.php" target="_blank">DaddyLive</a>
-    <a class="tvgarden" href="https://tv.garden/us/92KK6TWkV8ygOi" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">CMT USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-647.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/cmt-us-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/CrAbY7Qq2Ptoq5" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">CBS USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-52.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/cbs-wcbs-new-york-ny" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/72ykbPODNpiDI4" target="_blank">tv.garden</a>
-  </div>
-</div>
-<div class="channel">
-  <div class="channel-name">CW USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-300.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/cw-wdcw-district-of-columbia" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Comedy Central</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-310.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/comedy-central-us-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/ECc7AHPVn1as0e" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Cartoon Network</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-339.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/cartoon-network-usa-eastern-feed" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Cinemax USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-374.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/cinemax-eastern-feed" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Crime+ Investigation USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-669.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/crime-investigation-network-usa-hd" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Comet USA</div>
-  <div class="links">
-    <a class="tvgarden" href="https://tv.garden/us/ZdeUwozwvMjsrH" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Cooking Channel USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-697.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/the-cooking-channel" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Cleo TV</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-715.php" target="_blank">DaddyLive</a>
-    <a class="tvgarden" href="https://tv.garden/us/3M1IA8auJmXWcR" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Discovery Life Channel</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-313.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/discovery-channel-us-eastern-feed" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Disney Channel</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-312.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/disney-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/iVJvxARbpojOvm" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Discovery Channel</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-313.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/discovery-channel-us-eastern-feed" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Discovery Family</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-657.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/discovery-family-channel" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Disney XD</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-314.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/disney-xd-usa-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/VxLxPIXkm5daOd" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Destination America</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-651.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/destination-america" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Disney JR</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-652.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/disney-junior-usa-east" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">ESPN USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-44.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/espn" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">ESPN2 USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-45.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/espn2" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">E! Entertainment Television</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-315.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/e-entertainment-usa-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/zp8BR9hOVfGzho" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">FOX USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-54.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/fox-wnyw-new-york-ny" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/VdtO5eGtNZgtr2" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">FX USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-317.php" target="_blank">DaddyLive</a>
-    <a class="tvgarden" href="https://tv.garden/us/XSp3iDrpFtvKLO" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">FXX USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-298.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/fxx-usa-eastern" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/cXQkEDVEPyH3sW" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Freeform</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-301.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/freeform-east-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/jkavxmS1WxOlY8" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">FX Movie Channel</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-381.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/fx-movie-channel" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">FYI</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-665.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/fyi-usa-eastern" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/964SXpkcit3YD5" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Game Show Network</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-319.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/game-show-network-east" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/QzWyyxToeUMt0i" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">The Hallmark Channel</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-320.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/hallmark-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/nLEMk6k0qejaMo" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Hallmark Movies & Mysteries</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-296.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/hallmark-mystery-eastern-hd" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/7MLRJ9eeR9aHtc" target="_blank">tv.garden</a>
-  </div>
-</div>
-<div class="channel">
-  <div class="channel-name">HBO USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-321.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/hbo-eastern-feed" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">HBO2 USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-689.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/hbo-2-eastern-feed" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">HBO Comedy USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-690.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/hbo-comedy-hd-east" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">HBO Family USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-691.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/hbo-family-eastern-feed" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">HGTV</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-382.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/hgtv-usa-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/At37Dsvj2y6fRV" target="_blank">tv.garden</a>
-  </div>
-</div>
-<div class="channel">
-  <div class="channel-name">Investigation Discovery (ID USA)</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-324.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/investigation-discovery-usa-eastern" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">ION USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-325.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/ion-eastern-feed" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">IFC TV USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-656.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/independent-film-channel-us" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Lifetime Network</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-326.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/lifetime-network-us-eastern-feed" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Lifetime Movies Network</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-389.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/lifetime-movies-east" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/KM8cdpjGLTU6wI" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">MTV USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-371.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/mtv-usa-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/PNx2vCe45Qi0De" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">NBC USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-53.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/nbc-wnbc-new-york-ny" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/psUB79HpzTd5wZ" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">NFL Network</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-405.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/nfl-network" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/JWTNEfP4ZzULmA" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">National Geographic</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-328.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/national-geographic-us-eastern" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/y4nk0aoGzm3AAy" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">NICK JR</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-329.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/nick-jr-east" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/oGoNmU4wv4sJbW" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">NICK</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-330.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/nickelodeon-usa-east-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/TXc0ToY39JoCVk" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Nicktoons</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-649.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/nicktoons-east" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/NRXvat7WeZfrnw" target="_blank">tv.garden</a>
-  </div>
-</div>
-<div class="channel">
-  <div class="channel-name">Nat Geo Wild USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-745.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/national-geographic-wild" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/l7Jl9bi9Vw9aAN" target="_blank">tv.garden</a>
-  </div>
-</div>
 
-<div class="channel">
-  <div class="channel-name">Oprah Winfrey Network (OWN)</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-331.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/oprah-winfrey-network-usa-eastern" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Oxygen True Crime</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-332.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/oxygen-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/mEHf9ZjwxYxURb" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Paramount Network</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-334.php" target="_blank">DaddyLive</a>
-    <a class="tvgarden" href="https://tv.garden/us/7f3Tjrk6j7jniu" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Science Channel</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-294.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/science" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Showtime USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-333.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/paramount-with-showtime-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/z79BiHZi3oCx6N" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Starz</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-335.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/starz-eastern" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/wG9dRbn6PfzkB5" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">SYFY USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-373.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/syfy-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/KBJNPbBFFxPi2U" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">TBS USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-336.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/tbs-east" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">TLC</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-337.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/tlc-usa-eastern" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">TNT USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-338.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/tnt-eastern-feed" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Travel Channel</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-340.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/travel-us-east" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">TruTV USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-341.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/trutv-usa-eastern" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">TVLAND</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-342.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/tv-land-eastern" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/iUN8aEdhCDfiH1" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Food Network</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-384.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/food-network-usa-eastern-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/ZlkeMII1Cl5GKN" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">TeenNick</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-650.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/teennick-eastern" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/WUvdzoT6cabgBs" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">USA Network</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-343.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/usa-network-east-feed" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/J0bSORERCtXCw0" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">Universal Kids USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-668.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/universal-kids" target="_blank">TVPass</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">VICE TV</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-659.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/vice" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/fOwZvfkhUzyVje" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">WETV USA</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-655.php" target="_blank">DaddyLive</a>
-    <a class="tvpass" href="https://tvpass.org/channel/we-womens-entertainment-eastern" target="_blank">TVPass</a>
-    <a class="tvgarden" href="https://tv.garden/us/vHbVFjIfyXMUfI" target="_blank">tv.garden</a>
-  </div>
-</div>
-
-<div class="channel">
-  <div class="channel-name">WWE Network</div>
-  <div class="links">
-    <a class="daddylive" href="https://thedaddy.dad/stream/stream-376.php" target="_blank">DaddyLive</a>
-  </div>
-</div>
+<!-- LOADING -->
+<div id="loadingScreen">Loading…</div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div id="loginBox">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <div id="loginError"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <button id="logoutBtn" style="margin-bottom:20px;">Logout</button>
+
+  <div id="filterBar">
+    <div class="filter-btn active" data-filter="all">All</div>
+    <div class="filter-btn" data-filter="basic">Basic</div>
+    <div class="filter-btn" data-filter="premium">Premium</div>
+    <div class="filter-btn" data-filter="movies247">24/7 Movies</div>
+    <div class="filter-btn" data-filter="retro">Retro</div>
+  </div>
+
+  <div id="channelList"></div>
+
+</div>
+
+<!-- SCRIPT STARTS HERE -->
+<script>
+
+/* LOADING */
+window.addEventListener("load", () => {
+  const loader = document.getElementById("loadingScreen");
+  setTimeout(() => loader.style.display = "none", 2000);
+});
+
+/* LOGIN */
+const loginBtn = document.getElementById("loginBtn");
+const loginScreen = document.getElementById("loginScreen");
+const app = document.getElementById("app");
+const loginError = document.getElementById("loginError");
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+
+const VALID_USERNAME = "mary";
+const VALID_PASSWORD = "mypassword123";
+
+loginBtn.addEventListener("click", () => {
+  const user = usernameInput.value.trim();
+  const pass = passwordInput.value;
+
+  if (user === VALID_USERNAME && pass === VALID_PASSWORD) {
+    loginScreen.style.display = "none";
+    app.style.display = "block";
+  } else {
+    loginError.textContent = "Invalid username or password.";
+  }
+});
+
+/* LOGOUT */
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  app.style.display = "none";
+  loginScreen.style.display = "flex";
+  usernameInput.value = "";
+  passwordInput.value = "";
+  loginError.textContent = "";
+});
+
+/* CHANNEL LIST */
+const channels = [
+  { number: 2, name: "ABC", category: "basic", favorite: false },
+  { number: 4, name: "NBC", category: "basic", favorite: false },
+  { number: 5, name: "FOX", category: "basic", favorite: false },
+  { number: 7, name: "CBS", category: "basic", favorite: false },
+  { number: 9, name: "PBS", category: "basic", favorite: false },
+  { number: 11, name: "CW", category: "basic", favorite: false },
+  { number: 13, name: "MyNetworkTV", category: "basic", favorite: false },
+  { number: 20, name: "ESPN", category: "basic", favorite: false },
+  { number: 21, name: "ESPN2", category: "basic", favorite: false },
+  { number: 22, name: "TNT", category: "basic", favorite: false },
+  { number: 23, name: "TBS", category: "basic", favorite: false },
+  { number: 24, name: "USA Network", category: "basic", favorite: false },
+  { number: 25, name: "FX", category: "basic", favorite: false },
+  { number: 26, name: "A&E", category: "basic", favorite: false },
+  { number: 27, name: "History Channel", category: "basic", favorite: false },
+  { number: 28, name: "Discovery Channel", category: "basic", favorite: false },
+  { number: 29, name: "National Geographic", category: "basic", favorite: false },
+  { number: 30, name: "HGTV", category: "basic", favorite: false },
+  { number: 31, name: "Food Network", category: "basic", favorite: false },
+  { number: 32, name: "Travel Channel", category: "basic", favorite: false },
+  { number: 33, name: "Lifetime", category: "basic", favorite: false },
+  { number: 34, name: "Hallmark Channel", category: "basic", favorite: false },
+  { number: 35, name: "Bravo", category: "basic", favorite: false },
+  { number: 36, name: "E!", category: "basic", favorite: false },
+  { number: 37, name: "Syfy", category: "basic", favorite: false },
+  { number: 38, name: "Oxygen", category: "basic", favorite: false },
+  { number: 39, name: "BET", category: "basic", favorite: false },
+  { number: 40, name: "VH1", category: "basic", favorite: false },
+  { number: 41, name: "MTV", category: "basic", favorite: false },
+  { number: 42, name: "Comedy Central", category: "basic", favorite: false },
+  { number: 43, name: "Cartoon Network", category: "basic", favorite: false },
+  { number: 44, name: "Nickelodeon", category: "basic", favorite: false },
+  { number: 45, name: "Disney Channel", category: "basic", favorite: false },
+  { number: 46, name: "Animal Planet", category: "basic", favorite: false },
+  { number: 47, name: "TLC", category: "basic", favorite: false },
+  { number: 48, name: "Investigation Discovery", category: "basic", favorite: false },
+  { number: 49, name: "Weather Channel", category: "basic", favorite: false },
+
+  /* PREMIUM */
+  { number: 201, name: "HBO", category: "premium", favorite: false },
+  { number: 202, name: "HBO 2", category: "premium", favorite: false },
+  { number: 203, name: "HBO Family", category: "premium", favorite: false },
+  { number: 210, name: "Showtime", category: "premium", favorite: false },
+  { number: 211, name: "Showtime 2", category: "premium", favorite: false },
+  { number: 220, name: "Starz", category: "premium", favorite: false },
+  { number: 221, name: "Starz Edge", category: "premium", favorite: false },
+  { number: 230, name: "Cinemax", category: "premium", favorite: false },
+  { number: 231, name: "MoreMAX", category: "premium", favorite: false },
+  { number: 240, name: "The Movie Channel", category: "premium", favorite: false },
+
+  /* 24/7 MOVIES */
+  { number: 301, name: "Action Movies 24/7", category: "movies247", favorite: false },
+  { number: 302, name: "Comedy Movies 24/7", category: "movies247", favorite: false },
+  { number: 303, name: "Drama Movies 24/7", category: "movies247", favorite: false },
+  { number: 304, name: "Romance Movies 24/7", category: "movies247", favorite: false },
+  { number: 305, name: "Horror Movies 24/7", category: "movies247", favorite: false },
+  { number: 306, name: "Sci-Fi Movies 24/7", category: "movies247", favorite: false },
+  { number: 307, name: "Classic Movies 24/7", category: "movies247", favorite: false },
+  { number: 308, name: "Family Movies 24/7", category: "movies247", favorite: false },
+
+  /* RETRO */
+  { number: 401, name: "MeTV", category: "retro", favorite: false },
+  { number: 402, name: "Antenna TV", category: "retro", favorite: false },
+  { number: 403, name: "Cozi TV", category: "retro", favorite: false },
+  { number: 404, name: "TV Land", category: "retro", favorite: false },
+  { number: 405, name: "Retro TV", category: "retro", favorite: false },
+  { number: 406, name: "Decades", category: "retro", favorite: false },
+  { number: 407, name: "Bounce", category: "retro", favorite: false }
+];
+
+/* RENDER CHANNELS */
+const channelList = document.getElementById("channelList");
+
+function renderChannels(filter = "all") {
+  channelList.innerHTML = "";
+
+  channels.forEach((ch, index) => {
+    if (filter !== "all" && ch.category !== filter) return;
+
+    const div = document.createElement("div");
+    div.className = "channel";
+
+    div.innerHTML = `
+      <div class="channel-info">
+        <div class="channel-name">${ch.number} – ${ch.name}</div>
+        <div class="channel-meta">${formatCategory(ch.category)}</div>
+      </div>
+      <span class="favorite-star ${ch.favorite ? "active" : ""}" data-index="${index}">★</span>
+    `;
+
+    channelList.appendChild(div);
+  });
+
+  activateFavoriteStars();
+}
+
+function formatCategory(cat) {
+  if (cat === "basic") return "Basic Cable";
+  if (cat === "premium") return "Premium";
+  if (cat === "movies247") return "24/7 Movie Channel";
+  if (cat === "retro") return "Retro TV";
+  return "";
+}
+
+/* FAVORITES */
+function activateFavoriteStars() {
+  document.querySelectorAll(".favorite-star").forEach(star => {
+    star.addEventListener("click", e => {
+      const index = e.target.dataset.index;
+      channels[index].favorite = !channels[index].favorite;
+      e.target.classList.toggle("active");
+    });
+  });
+}
+
+/* FILTER BUTTONS */
+const filterButtons = document.querySelectorAll(".filter-btn");
+let currentFilter = "all";
+
+filterButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelector(".filter-btn.active").classList.remove("active");
+    btn.classList.add("active");
+
+    currentFilter = btn.dataset.filter;
+    renderChannels(currentFilter);
+  });
+});
+
+/* INITIAL RENDER */
+renderChannels("all");
+
+</script>
 
 </body>
 </html>
-
-
